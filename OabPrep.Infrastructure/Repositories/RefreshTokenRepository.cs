@@ -14,6 +14,9 @@ public sealed class RefreshTokenRepository : IRefreshTokenRepository
     public async Task AddAsync(RefreshToken token, CancellationToken cancellationToken = default) =>
         await _context.RefreshTokens.AddAsync(token, cancellationToken);
 
+    public Task<RefreshToken?> FindByHashAsync(string tokenHash, CancellationToken cancellationToken = default) =>
+        _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == tokenHash, cancellationToken);
+
     public async Task MarkAllAsRevokedAsync(Guid userId, CancellationToken cancellationToken = default)
     {
         var tokens = await _context.RefreshTokens

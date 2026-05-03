@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using OabPrep.Application.UseCases.Auth.ConfirmEmail;
 using OabPrep.Application.UseCases.Auth.ForgotPassword;
 using OabPrep.Application.UseCases.Auth.Login;
+using OabPrep.Application.UseCases.Auth.Logout;
+using OabPrep.Application.UseCases.Auth.Refresh;
 using OabPrep.Application.UseCases.Auth.Register;
 using OabPrep.Application.UseCases.Auth.ResetPassword;
 using System.Reflection;
@@ -24,6 +26,8 @@ public static class DependencyInjection
         services.AddScoped<LoginUseCase>();
         services.AddScoped<ForgotPasswordUseCase>();
         services.AddScoped<ResetPasswordUseCase>();
+        services.AddScoped<RefreshTokenUseCase>();
+        services.AddScoped<LogoutUseCase>();
 
         return services;
     }

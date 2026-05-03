@@ -1,9 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OabPrep.Application.UseCases.Auth.ConfirmEmail;
 using OabPrep.Application.UseCases.Auth.ForgotPassword;
 using OabPrep.Application.UseCases.Auth.Login;
+using OabPrep.Application.UseCases.Auth.Logout;
+using OabPrep.Application.UseCases.Auth.Refresh;
 using OabPrep.Application.UseCases.Auth.Register;
 using OabPrep.Application.UseCases.Auth.ResetPassword;
+using System.Security.Claims;
 
 namespace OabPrep.API.Controllers;
 
@@ -16,19 +20,25 @@ public sealed class AuthController : ControllerBase
     private readonly LoginUseCase _loginUseCase;
     private readonly ForgotPasswordUseCase _forgotPasswordUseCase;
     private readonly ResetPasswordUseCase _resetPasswordUseCase;
+    private readonly RefreshTokenUseCase _refreshTokenUseCase;
+    private readonly LogoutUseCase _logoutUseCase;
 
     public AuthController(
         RegisterUserUseCase registerUseCase,
         ConfirmEmailUseCase confirmEmailUseCase,
         LoginUseCase loginUseCase,
         ForgotPasswordUseCase forgotPasswordUseCase,
-        ResetPasswordUseCase resetPasswordUseCase)
+        ResetPasswordUseCase resetPasswordUseCase,
+        RefreshTokenUseCase refreshTokenUseCase,
+        LogoutUseCase logoutUseCase)
     {
         _registerUseCase = registerUseCase;
         _confirmEmailUseCase = confirmEmailUseCase;
         _loginUseCase = loginUseCase;
         _forgotPasswordUseCase = forgotPasswordUseCase;
         _resetPasswordUseCase = resetPasswordUseCase;
+        _refreshTokenUseCase = refreshTokenUseCase;
+        _logoutUseCase = logoutUseCase;
     }
 
     [HttpPost("register")]
@@ -87,5 +97,28 @@ public sealed class AuthController : ControllerBase
     {
         var response = await _resetPasswordUseCase.ExecuteAsync(command, cancellationToken);
         return Ok(response);
+    }
+
+    [HttpPost("refresh")]
+    [ProducesResponseType(typeof(RefreshTokenResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Refresh(
+        [FromBody] RefreshTokenCommand command,
+        CancellationToken cancellationToken)
+    {
+        var response = await _refreshTokenUseCase.ExecuteAsync(command, cancellationToken);
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPost("logout")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
+    {
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        await _logoutUseCase.ExecuteAsync(userId, cancellationToken);
+        return NoContent();
     }
 }

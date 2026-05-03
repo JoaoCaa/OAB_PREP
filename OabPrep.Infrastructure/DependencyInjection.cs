@@ -40,6 +40,7 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordResetRateLimitService, PasswordResetRateLimitService>();
 
         services.AddHostedService<BackgroundTaskProcessor>();
+        services.AddHostedService<CleanupExpiredTokensService>();
 
         return services;
     }
