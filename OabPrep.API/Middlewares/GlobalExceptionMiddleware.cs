@@ -60,8 +60,39 @@ public class GlobalExceptionMiddleware
             return;
         }
 
+        if (exception is AccountLockedException lockedEx)
+        {
+            context.Response.StatusCode = 423;
+            var body = new
+            {
+                status = 423,
+                message = lockedEx.Message,
+                retryAfterSeconds = (int)lockedEx.LockoutRemaining.TotalSeconds,
+                timestamp = DateTime.UtcNow
+            };
+            await context.Response.WriteAsync(JsonSerializer.Serialize(body, JsonOptions));
+            return;
+        }
+
+        if (exception is RateLimitExceededException rateLimitEx)
+        {
+            context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+            context.Response.Headers.RetryAfter = ((int)rateLimitEx.RetryAfter.TotalSeconds).ToString();
+            var body = new
+            {
+                status = 429,
+                message = rateLimitEx.Message,
+                retryAfterSeconds = (int)rateLimitEx.RetryAfter.TotalSeconds,
+                timestamp = DateTime.UtcNow
+            };
+            await context.Response.WriteAsync(JsonSerializer.Serialize(body, JsonOptions));
+            return;
+        }
+
         var (statusCode, message) = exception switch
         {
+            SamePasswordException ex => (HttpStatusCode.BadRequest, ex.Message),
+            UnauthorizedException ex => (HttpStatusCode.Unauthorized, ex.Message),
             InvalidTokenException ex => (HttpStatusCode.BadRequest, ex.Message),
             ArgumentException ex => (HttpStatusCode.BadRequest, ex.Message),
             UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Não autorizado."),

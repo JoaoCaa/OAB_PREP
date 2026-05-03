@@ -38,5 +38,20 @@ public sealed class EmailToken : BaseEntity<int>
 
     public User? User { get; private set; }
 
+    public static (EmailToken Entity, string RawToken) CreatePasswordReset(Guid userId)
+    {
+        var rawBytes = RandomNumberGenerator.GetBytes(32);
+        var rawToken = Convert.ToHexString(rawBytes);
+        var storedToken = Convert.ToHexString(SHA256.HashData(rawBytes));
+
+        return (new EmailToken
+        {
+            UserId = userId,
+            Token = storedToken,
+            TokenType = TokenType.PasswordReset,
+            ExpiresAt = DateTime.UtcNow.AddHours(1)
+        }, rawToken);
+    }
+
     public void MarkAsUsed() => UsedAt = DateTime.UtcNow;
 }

@@ -22,4 +22,17 @@ public sealed class EmailServiceStub : IEmailService
 
         return Task.CompletedTask;
     }
+
+    public Task SendPasswordResetEmailAsync(
+        string to,
+        string name,
+        string resetToken,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(
+            "[EMAIL STUB] Password reset email → {Email} ({Name}) | Token: {Token}",
+            to, name, resetToken);
+
+        return Task.CompletedTask;
+    }
 }

@@ -27,11 +27,17 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IEmailTokenRepository, EmailTokenRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IAuditLogService, AuditLogService>();
 
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
+        services.AddSingleton<IJwtService, JwtService>();
         services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
         services.AddScoped<IEmailService, EmailServiceStub>();
+
+        services.AddMemoryCache();
+        services.AddSingleton<ILoginAttemptService, LoginAttemptService>();
+        services.AddSingleton<IPasswordResetRateLimitService, PasswordResetRateLimitService>();
 
         services.AddHostedService<BackgroundTaskProcessor>();
 

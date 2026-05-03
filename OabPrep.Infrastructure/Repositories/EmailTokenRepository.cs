@@ -25,4 +25,14 @@ public sealed class EmailTokenRepository : IEmailTokenRepository
                      && t.TokenType == tokenType
                      && t.UsedAt == null,
                 cancellationToken);
+
+    public Task InvalidatePreviousByUserIdAsync(
+        Guid userId,
+        TokenType tokenType,
+        CancellationToken cancellationToken = default) =>
+        _context.EmailTokens
+            .Where(t => t.UserId == userId && t.TokenType == tokenType && t.UsedAt == null)
+            .ExecuteUpdateAsync(
+                s => s.SetProperty(t => t.UsedAt, DateTime.UtcNow),
+                cancellationToken);
 }

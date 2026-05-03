@@ -28,4 +28,10 @@ public sealed class User : BaseEntity<Guid>
 
     public void ConfirmEmail() => EmailConfirmed = true;
     public void Deactivate() => IsActive = false;
+
+    public void UpdatePassword(string newPasswordHash)
+    {
+        PasswordHash = newPasswordHash;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }
