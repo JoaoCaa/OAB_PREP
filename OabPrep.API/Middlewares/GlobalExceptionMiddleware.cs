@@ -1,4 +1,5 @@
 using FluentValidation;
+using OabPrep.Application.Common.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -61,6 +62,7 @@ public class GlobalExceptionMiddleware
 
         var (statusCode, message) = exception switch
         {
+            InvalidTokenException ex => (HttpStatusCode.BadRequest, ex.Message),
             ArgumentException ex => (HttpStatusCode.BadRequest, ex.Message),
             UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Não autorizado."),
             _ => (HttpStatusCode.InternalServerError, "Erro interno do servidor.")

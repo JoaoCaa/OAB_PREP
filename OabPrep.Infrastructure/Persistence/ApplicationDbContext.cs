@@ -13,6 +13,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<User> Users => Set<User>();
     public DbSet<EmailToken> EmailTokens => Set<EmailToken>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

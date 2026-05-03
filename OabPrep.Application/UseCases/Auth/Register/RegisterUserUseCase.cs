@@ -50,7 +50,9 @@ public sealed class RegisterUserUseCase
         // AutoMapper constrói o User via factory method
         var input = new CreateUserInput(command.Name, normalizedEmail, passwordHash);
         var user = _mapper.Map<User>(input);
-        var emailToken = EmailToken.CreateConfirmation(user.Id);
+
+        // rawToken vai no link do e-mail; entity.Token é o SHA256(rawToken) que fica no banco
+        var (emailToken, rawToken) = EmailToken.CreateConfirmation(user.Id);
 
         await _userRepository.AddAsync(user, cancellationToken);
         await _emailTokenRepository.AddAsync(emailToken, cancellationToken);
@@ -59,7 +61,7 @@ public sealed class RegisterUserUseCase
         // Captura para closure antes do fire-and-forget
         var recipientEmail = user.Email;
         var recipientName = user.Name;
-        var token = emailToken.Token;
+        var token = rawToken; // token cru para o link, não o hash
 
         _backgroundTaskQueue.Enqueue(async (sp, ct) =>
         {

@@ -8,19 +8,27 @@ public sealed class EmailToken : BaseEntity<int>
 {
     private EmailToken() { }
 
-    public static EmailToken CreateConfirmation(Guid userId)
+    /// <summary>
+    /// Retorna a entidade (com Token = SHA256(rawBytes) para persistência)
+    /// e o rawToken (hex dos bytes aleatórios) para enviar no link do e-mail.
+    /// O banco NUNCA armazena o token cru — apenas o hash.
+    /// </summary>
+    public static (EmailToken Entity, string RawToken) CreateConfirmation(Guid userId)
     {
-        return new EmailToken
+        var rawBytes = RandomNumberGenerator.GetBytes(32);
+        var rawToken = Convert.ToHexString(rawBytes);
+        var storedToken = Convert.ToHexString(SHA256.HashData(rawBytes));
+
+        var entity = new EmailToken
         {
             UserId = userId,
-            Token = GenerateToken(),
+            Token = storedToken,
             TokenType = TokenType.EmailConfirm,
             ExpiresAt = DateTime.UtcNow.AddHours(24)
         };
-    }
 
-    private static string GenerateToken() =>
-        Convert.ToHexString(SHA256.HashData(RandomNumberGenerator.GetBytes(32)));
+        return (entity, rawToken);
+    }
 
     public Guid UserId { get; private set; }
     public string Token { get; private set; } = string.Empty;
@@ -29,4 +37,6 @@ public sealed class EmailToken : BaseEntity<int>
     public DateTime? UsedAt { get; private set; }
 
     public User? User { get; private set; }
+
+    public void MarkAsUsed() => UsedAt = DateTime.UtcNow;
 }

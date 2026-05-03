@@ -7,6 +7,7 @@ using OabPrep.Infrastructure.Email;
 using OabPrep.Infrastructure.Persistence;
 using OabPrep.Infrastructure.Repositories;
 using OabPrep.Infrastructure.Security;
+using OabPrep.Infrastructure.Services;
 
 namespace OabPrep.Infrastructure;
 
@@ -26,6 +27,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IEmailTokenRepository, EmailTokenRepository>();
+        services.AddScoped<IAuditLogService, AuditLogService>();
 
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();

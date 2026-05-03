@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OabPrep.Application.UseCases.Auth.ConfirmEmail;
 using OabPrep.Application.UseCases.Auth.Register;
 using System.Reflection;
 
@@ -16,6 +17,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         services.AddScoped<RegisterUserUseCase>();
+        services.AddScoped<ConfirmEmailUseCase>();
 
         return services;
     }
