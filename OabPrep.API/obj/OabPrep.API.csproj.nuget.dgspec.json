@@ -1,22 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\joaoc\\source\\repos\\OabPrep\\API\\OabPrep.API.csproj": {}
+    "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.API\\OabPrep.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\joaoc\\source\\repos\\OabPrep\\API\\OabPrep.API.csproj": {
+    "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.API\\OabPrep.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\joaoc\\source\\repos\\OabPrep\\API\\OabPrep.API.csproj",
+        "projectUniqueName": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.API\\OabPrep.API.csproj",
         "projectName": "OabPrep.API",
-        "projectPath": "C:\\Users\\joaoc\\source\\repos\\OabPrep\\API\\OabPrep.API.csproj",
+        "projectPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.API\\OabPrep.API.csproj",
         "packagesPath": "C:\\Users\\joaoc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\joaoc\\source\\repos\\OabPrep\\API\\obj\\",
+        "outputPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
+          "C:\\Fontes\\Faculdade\\OAB_PREP\\NuGet.Config",
           "C:\\Users\\joaoc\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -25,10 +26,197 @@
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://nuget.medgrupo.com.br/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Application\\OabPrep.Application.csproj": {
+                "projectPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Application\\OabPrep.Application.csproj"
+              },
+              "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Infrastructure\\OabPrep.Infrastructure.csproj": {
+                "projectPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Infrastructure\\OabPrep.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
+            "Serilog.Sinks.Seq": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Application\\OabPrep.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Application\\OabPrep.Application.csproj",
+        "projectName": "OabPrep.Application",
+        "projectPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Application\\OabPrep.Application.csproj",
+        "packagesPath": "C:\\Users\\joaoc\\.nuget\\packages\\",
+        "outputPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Fontes\\Faculdade\\OAB_PREP\\NuGet.Config",
+          "C:\\Users\\joaoc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Domain\\OabPrep.Domain.csproj": {
+                "projectPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Domain\\OabPrep.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[11.5.1, )"
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.5.1, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Domain\\OabPrep.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Domain\\OabPrep.Domain.csproj",
+        "projectName": "OabPrep.Domain",
+        "projectPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Domain\\OabPrep.Domain.csproj",
+        "packagesPath": "C:\\Users\\joaoc\\.nuget\\packages\\",
+        "outputPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Fontes\\Faculdade\\OAB_PREP\\NuGet.Config",
+          "C:\\Users\\joaoc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
@@ -63,14 +251,92 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Infrastructure\\OabPrep.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Infrastructure\\OabPrep.Infrastructure.csproj",
+        "projectName": "OabPrep.Infrastructure",
+        "projectPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Infrastructure\\OabPrep.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\joaoc\\.nuget\\packages\\",
+        "outputPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Fontes\\Faculdade\\OAB_PREP\\NuGet.Config",
+          "C:\\Users\\joaoc\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Application\\OabPrep.Application.csproj": {
+                "projectPath": "C:\\Fontes\\Faculdade\\OAB_PREP\\OabPrep.Application\\OabPrep.Application.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

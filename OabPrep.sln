@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{7B3ACA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{625556A7-5886-4F70-BA0C-F064B3659369}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OabPrep.API", "API\OabPrep.API.csproj", "{04D3D87D-F20D-4C44-A93A-4452F0460085}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OabPrep.API", "OabPrep.API\OabPrep.API.csproj", "{04D3D87D-F20D-4C44-A93A-4452F0460085}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OabPrep.Application", "OabPrep.Application\OabPrep.Application.csproj", "{C875B72D-6770-4002-A3D6-8D7F54BEF7F3}"
 EndProject

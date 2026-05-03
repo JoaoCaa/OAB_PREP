@@ -1,25 +1,35 @@
+using OabPrep.API.Extensions;
+using OabPrep.API.Middlewares;
+using OabPrep.Application;
+using OabPrep.Infrastructure;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
+builder.Services.AddControllers();
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApiServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+if (!app.Environment.IsProduction())
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OabPrep API v1"));
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
+app.UseCors("DefaultPolicy");
+app.UseRateLimiter();
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapRazorPages();
+app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();
