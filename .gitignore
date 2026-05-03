@@ -1,0 +1,149 @@
+# =========================
+
+# Build / Output
+
+# =========================
+
+bin/
+obj/
+out/
+publish/
+
+# =========================
+
+# User-specific files
+
+# =========================
+
+*.user
+*.userosscache
+*.suo
+*.rsuser
+
+# =========================
+
+# Visual Studio / VS Code
+
+# =========================
+
+.vs/
+.vscode/
+*.code-workspace
+
+# =========================
+
+# Rider / JetBrains
+
+# =========================
+
+.idea/
+
+# =========================
+
+# Logs
+
+# =========================
+
+*.log
+
+# =========================
+
+# OS files
+
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+
+# NuGet
+
+# =========================
+
+*.nupkg
+*.snupkg
+packages/
+.nuget/packages/
+
+# =========================
+
+# Environment / Secrets
+
+# =========================
+
+appsettings.Development.json
+appsettings.Local.json
+.env
+.env.*
+
+# =========================
+
+# ASP.NET Core
+
+# =========================
+
+wwwroot/lib/
+node_modules/
+
+# =========================
+
+# EF Core
+
+# =========================
+
+Migrations/
+
+# =========================
+
+# Test results
+
+# =========================
+
+TestResults/
+*.trx
+
+# =========================
+
+# Coverage
+
+# =========================
+
+coverage/
+*.coverage
+*.coveragexml
+
+# =========================
+
+# Docker
+
+# =========================
+
+docker-compose.override.yml
+
+# =========================
+
+# Publish profiles
+
+# =========================
+
+Properties/PublishProfiles/
+
+# =========================
+
+# Azure
+
+# =========================
+
+*.azurePubxml
+
+# =========================
+
+# Misc
+
+# =========================
+
+*.tmp
+*.temp
+*.bak
+*.swp
