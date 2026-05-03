@@ -1,3 +1,4 @@
+using FluentValidation;
 using System.Net;
 using System.Text.Json;
 
@@ -5,6 +6,11 @@ namespace OabPrep.API.Middlewares;
 
 public class GlobalExceptionMiddleware
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     private readonly RequestDelegate _next;
     private readonly ILogger<GlobalExceptionMiddleware> _logger;
 
@@ -32,26 +38,43 @@ public class GlobalExceptionMiddleware
     {
         context.Response.ContentType = "application/json";
 
+        if (exception is ValidationException validationEx)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+
+            var errors = validationEx.Errors
+                .GroupBy(e => e.PropertyName.ToLowerInvariant())
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(e => e.ErrorMessage).ToArray());
+
+            var body = new
+            {
+                status = 400,
+                title = "One or more validation errors occurred.",
+                errors
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(body, JsonOptions));
+            return;
+        }
+
         var (statusCode, message) = exception switch
         {
-            ArgumentException => (HttpStatusCode.BadRequest, exception.Message),
-            UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Unauthorized"),
-            _ => (HttpStatusCode.InternalServerError, "An unexpected error occurred")
+            ArgumentException ex => (HttpStatusCode.BadRequest, ex.Message),
+            UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Não autorizado."),
+            _ => (HttpStatusCode.InternalServerError, "Erro interno do servidor.")
         };
 
         context.Response.StatusCode = (int)statusCode;
 
-        var response = new
+        var errorBody = new
         {
             status = (int)statusCode,
             message,
             timestamp = DateTime.UtcNow
         };
 
-        await context.Response.WriteAsync(
-            JsonSerializer.Serialize(response, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            }));
+        await context.Response.WriteAsync(JsonSerializer.Serialize(errorBody, JsonOptions));
     }
 }

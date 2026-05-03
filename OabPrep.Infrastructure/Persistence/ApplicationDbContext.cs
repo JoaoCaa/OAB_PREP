@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OabPrep.Application.Common.Interfaces;
+using OabPrep.Domain.Entities;
 
 namespace OabPrep.Infrastructure.Persistence;
 
@@ -9,6 +10,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         : base(options)
     {
     }
+
+    public DbSet<User> Users => Set<User>();
+    public DbSet<EmailToken> EmailTokens => Set<EmailToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

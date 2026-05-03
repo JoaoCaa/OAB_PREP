@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,7 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.AddEndpointsApiExplorer();
+        services.AddFluentValidationAutoValidation();
         services.AddSwaggerWithJwt();
         services.AddHealthChecks();
         services.AddCorsPolicies(configuration);
