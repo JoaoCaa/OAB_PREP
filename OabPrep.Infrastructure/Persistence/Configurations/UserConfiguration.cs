@@ -37,6 +37,9 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasDefaultValue(true);
 
+        builder.Property(u => u.AvatarUrl)
+            .HasMaxLength(500);
+
         builder.Property(u => u.CreatedAt)
             .IsRequired();
     }

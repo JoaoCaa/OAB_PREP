@@ -8,6 +8,7 @@ using OabPrep.Infrastructure.Persistence;
 using OabPrep.Infrastructure.Repositories;
 using OabPrep.Infrastructure.Security;
 using OabPrep.Infrastructure.Services;
+using OabPrep.Infrastructure.Storage;
 
 namespace OabPrep.Infrastructure;
 
@@ -38,6 +39,7 @@ public static class DependencyInjection
         services.AddSingleton<IJwtService, JwtService>();
         services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
         services.AddScoped<IEmailService, EmailServiceStub>();
+        services.AddScoped<IStorageService, StorageServiceStub>();
 
         services.AddMemoryCache();
         services.AddSingleton<ILoginAttemptService, LoginAttemptService>();

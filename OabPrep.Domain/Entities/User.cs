@@ -26,6 +26,7 @@ public sealed class User : BaseEntity<Guid>
     public string Role { get; private set; } = "User";
     public bool EmailConfirmed { get; private set; }
     public bool IsActive { get; private set; }
+    public string? AvatarUrl { get; private set; }
 
     public void ConfirmEmail() => EmailConfirmed = true;
     public void Deactivate() => IsActive = false;
@@ -33,6 +34,28 @@ public sealed class User : BaseEntity<Guid>
     public void UpdatePassword(string newPasswordHash)
     {
         PasswordHash = newPasswordHash;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateProfile(string name)
+    {
+        Name = name;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateAvatar(string avatarUrl)
+    {
+        AvatarUrl = avatarUrl;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Anonymize()
+    {
+        Name = "Usuário Removido";
+        Email = $"deleted_{Id}@oabprep.app";
+        PasswordHash = string.Empty;
+        AvatarUrl = null;
+        IsActive = false;
         UpdatedAt = DateTime.UtcNow;
     }
 }

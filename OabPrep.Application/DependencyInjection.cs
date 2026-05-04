@@ -20,6 +20,11 @@ using OabPrep.Application.UseCases.Questions.GetList;
 using OabPrep.Application.UseCases.Questions.Update;
 using OabPrep.Application.UseCases.Performance.GetAreaPerformance;
 using OabPrep.Application.UseCases.Performance.GetUserPerformance;
+using OabPrep.Application.UseCases.Profile.ChangePassword;
+using OabPrep.Application.UseCases.Profile.DeleteAccount;
+using OabPrep.Application.UseCases.Profile.GetProfile;
+using OabPrep.Application.UseCases.Profile.UpdateProfile;
+using OabPrep.Application.UseCases.Profile.UploadAvatar;
 using OabPrep.Application.UseCases.Sessions.CreateSession;
 using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.GetSession;
@@ -65,6 +70,12 @@ public static class DependencyInjection
         services.AddScoped<GetSessionUseCase>();
         services.AddScoped<GetUserPerformanceUseCase>();
         services.AddScoped<GetAreaPerformanceUseCase>();
+
+        services.AddScoped<GetProfileUseCase>();
+        services.AddScoped<UpdateProfileUseCase>();
+        services.AddScoped<ChangePasswordUseCase>();
+        services.AddScoped<UploadAvatarUseCase>();
+        services.AddScoped<DeleteAccountUseCase>();
 
         return services;
     }
