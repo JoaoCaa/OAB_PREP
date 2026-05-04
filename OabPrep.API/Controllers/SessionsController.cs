@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OabPrep.Application.UseCases.Sessions.CreateSession;
+using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
 using System.Security.Claims;
 
@@ -13,13 +14,16 @@ public sealed class SessionsController : ControllerBase
 {
     private readonly CreateSessionUseCase _createSessionUseCase;
     private readonly SubmitAnswerUseCase _submitAnswerUseCase;
+    private readonly FinishSessionUseCase _finishSessionUseCase;
 
     public SessionsController(
         CreateSessionUseCase createSessionUseCase,
-        SubmitAnswerUseCase submitAnswerUseCase)
+        SubmitAnswerUseCase submitAnswerUseCase,
+        FinishSessionUseCase finishSessionUseCase)
     {
         _createSessionUseCase = createSessionUseCase;
         _submitAnswerUseCase = submitAnswerUseCase;
+        _finishSessionUseCase = finishSessionUseCase;
     }
 
     [HttpPost]
@@ -50,6 +54,19 @@ public sealed class SessionsController : ControllerBase
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var result = await _submitAnswerUseCase.ExecuteAsync(
             command with { SessionId = sessionId }, userId, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpPost("{sessionId:int}/finish")]
+    [ProducesResponseType(typeof(FinishSessionResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> Finish(int sessionId, CancellationToken cancellationToken)
+    {
+        var userId = GetUserId();
+        var result = await _finishSessionUseCase.ExecuteAsync(sessionId, userId, cancellationToken);
         return Ok(result);
     }
 

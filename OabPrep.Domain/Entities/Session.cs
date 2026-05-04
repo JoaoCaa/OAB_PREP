@@ -12,6 +12,7 @@ public sealed class Session : BaseEntity<int>
     public Guid UserId { get; private set; }
     public SessionStatus Status { get; private set; } = SessionStatus.InProgress;
     public int CorrectAnswers { get; private set; }
+    public DateTime? FinishedAt { get; private set; }
 
     public IReadOnlyList<SessionAnswer> Answers => _answers.AsReadOnly();
 
@@ -38,6 +39,7 @@ public sealed class Session : BaseEntity<int>
     public void Complete()
     {
         Status = SessionStatus.Completed;
+        FinishedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
 

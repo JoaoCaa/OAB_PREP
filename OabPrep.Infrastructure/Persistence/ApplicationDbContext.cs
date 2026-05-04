@@ -20,6 +20,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Alternative> Alternatives => Set<Alternative>();
     public DbSet<Session> Sessions => Set<Session>();
     public DbSet<SessionAnswer> SessionAnswers => Set<SessionAnswer>();
+    public DbSet<UserPerformanceCache> UserPerformanceCaches => Set<UserPerformanceCache>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
