@@ -13,6 +13,11 @@ using OabPrep.Application.UseCases.LawAreas.Deactivate;
 using OabPrep.Application.UseCases.LawAreas.GetLawAreaById;
 using OabPrep.Application.UseCases.LawAreas.GetLawAreas;
 using OabPrep.Application.UseCases.LawAreas.Update;
+using OabPrep.Application.UseCases.Questions.Create;
+using OabPrep.Application.UseCases.Questions.Deactivate;
+using OabPrep.Application.UseCases.Questions.GetById;
+using OabPrep.Application.UseCases.Questions.GetList;
+using OabPrep.Application.UseCases.Questions.Update;
 using System.Reflection;
 
 namespace OabPrep.Application;
@@ -39,6 +44,12 @@ public static class DependencyInjection
         services.AddScoped<CreateLawAreaUseCase>();
         services.AddScoped<UpdateLawAreaUseCase>();
         services.AddScoped<DeactivateLawAreaUseCase>();
+
+        services.AddScoped<CreateQuestionUseCase>();
+        services.AddScoped<UpdateQuestionUseCase>();
+        services.AddScoped<DeactivateQuestionUseCase>();
+        services.AddScoped<GetQuestionsUseCase>();
+        services.AddScoped<GetQuestionByIdUseCase>();
 
         return services;
     }

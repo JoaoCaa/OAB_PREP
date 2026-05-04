@@ -16,6 +16,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<LawArea> LawAreas => Set<LawArea>();
+    public DbSet<Question> Questions => Set<Question>();
+    public DbSet<Alternative> Alternatives => Set<Alternative>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
