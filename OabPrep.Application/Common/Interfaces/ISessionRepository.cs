@@ -11,4 +11,5 @@ public interface ISessionRepository
     Task<Session?> FindByIdForFinishAsync(int id, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<int>> GetCorrectlyAnsweredQuestionIdsAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<IList<AreaAnswerStats>> GetAreaStatsForUserAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<SessionAnswer?> FindSessionAnswerAsync(int sessionId, int questionId, CancellationToken cancellationToken = default);
 }

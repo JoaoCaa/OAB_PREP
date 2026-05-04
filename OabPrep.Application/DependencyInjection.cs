@@ -21,6 +21,7 @@ using OabPrep.Application.UseCases.Questions.Update;
 using OabPrep.Application.UseCases.Sessions.CreateSession;
 using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
+using OabPrep.Application.UseCases.Sessions.ToggleReviewMark;
 using System.Reflection;
 
 namespace OabPrep.Application;
@@ -57,6 +58,7 @@ public static class DependencyInjection
         services.AddScoped<CreateSessionUseCase>();
         services.AddScoped<SubmitAnswerUseCase>();
         services.AddScoped<FinishSessionUseCase>();
+        services.AddScoped<ToggleReviewMarkUseCase>();
 
         return services;
     }

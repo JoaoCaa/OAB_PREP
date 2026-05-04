@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OabPrep.Application.UseCases.Sessions.CreateSession;
 using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
+using OabPrep.Application.UseCases.Sessions.ToggleReviewMark;
 using System.Security.Claims;
 
 namespace OabPrep.API.Controllers;
@@ -15,15 +16,18 @@ public sealed class SessionsController : ControllerBase
     private readonly CreateSessionUseCase _createSessionUseCase;
     private readonly SubmitAnswerUseCase _submitAnswerUseCase;
     private readonly FinishSessionUseCase _finishSessionUseCase;
+    private readonly ToggleReviewMarkUseCase _toggleReviewMarkUseCase;
 
     public SessionsController(
         CreateSessionUseCase createSessionUseCase,
         SubmitAnswerUseCase submitAnswerUseCase,
-        FinishSessionUseCase finishSessionUseCase)
+        FinishSessionUseCase finishSessionUseCase,
+        ToggleReviewMarkUseCase toggleReviewMarkUseCase)
     {
         _createSessionUseCase = createSessionUseCase;
         _submitAnswerUseCase = submitAnswerUseCase;
         _finishSessionUseCase = finishSessionUseCase;
+        _toggleReviewMarkUseCase = toggleReviewMarkUseCase;
     }
 
     [HttpPost]
@@ -67,6 +71,23 @@ public sealed class SessionsController : ControllerBase
     {
         var userId = GetUserId();
         var result = await _finishSessionUseCase.ExecuteAsync(sessionId, userId, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpPatch("{sessionId:int}/answers/{questionId:int}/review")]
+    [ProducesResponseType(typeof(ToggleReviewMarkResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ToggleReview(
+        int sessionId,
+        int questionId,
+        [FromBody] ToggleReviewMarkCommand command,
+        CancellationToken cancellationToken)
+    {
+        var userId = GetUserId();
+        var result = await _toggleReviewMarkUseCase.ExecuteAsync(sessionId, questionId, command, userId, cancellationToken);
         return Ok(result);
     }
 

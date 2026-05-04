@@ -46,6 +46,14 @@ public sealed class SessionRepository : ISessionRepository
                   .ToList();
     }
 
+    public Task<SessionAnswer?> FindSessionAnswerAsync(
+        int sessionId,
+        int questionId,
+        CancellationToken cancellationToken = default) =>
+        _context.SessionAnswers
+            .Include(a => a.Session)
+            .FirstOrDefaultAsync(a => a.SessionId == sessionId && a.QuestionId == questionId, cancellationToken);
+
     public async Task<IReadOnlyCollection<int>> GetCorrectlyAnsweredQuestionIdsAsync(
         Guid userId,
         CancellationToken cancellationToken = default)

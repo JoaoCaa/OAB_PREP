@@ -12,6 +12,7 @@ public sealed class SessionAnswer : BaseEntity<int>
     public bool? IsCorrect { get; private set; }
     public int? TimeSpentSeconds { get; private set; }
     public DateTime? AnsweredAt { get; private set; }
+    public bool IsMarkedForReview { get; private set; }
 
     public Session? Session { get; private set; }
     public Question? Question { get; private set; }
@@ -25,6 +26,12 @@ public sealed class SessionAnswer : BaseEntity<int>
         IsCorrect = isCorrect;
         TimeSpentSeconds = timeSpentSeconds;
         AnsweredAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void MarkForReview(bool marked)
+    {
+        IsMarkedForReview = marked;
         UpdatedAt = DateTime.UtcNow;
     }
 }
