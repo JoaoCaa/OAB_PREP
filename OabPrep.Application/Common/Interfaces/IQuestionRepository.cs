@@ -16,4 +16,9 @@ public interface IQuestionRepository
     Task<Question?> FindByIdWithAlternativesAsync(int id, CancellationToken cancellationToken = default);
 
     Task AddAsync(Question question, CancellationToken cancellationToken = default);
+
+    Task<IList<Question>> GetActiveForSessionAsync(
+        IReadOnlyList<int>? lawAreaIds,
+        IReadOnlyCollection<int>? excludeQuestionIds,
+        CancellationToken cancellationToken = default);
 }

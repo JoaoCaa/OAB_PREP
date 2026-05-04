@@ -18,6 +18,7 @@ using OabPrep.Application.UseCases.Questions.Deactivate;
 using OabPrep.Application.UseCases.Questions.GetById;
 using OabPrep.Application.UseCases.Questions.GetList;
 using OabPrep.Application.UseCases.Questions.Update;
+using OabPrep.Application.UseCases.Sessions.CreateSession;
 using System.Reflection;
 
 namespace OabPrep.Application;
@@ -50,6 +51,8 @@ public static class DependencyInjection
         services.AddScoped<DeactivateQuestionUseCase>();
         services.AddScoped<GetQuestionsUseCase>();
         services.AddScoped<GetQuestionByIdUseCase>();
+
+        services.AddScoped<CreateSessionUseCase>();
 
         return services;
     }

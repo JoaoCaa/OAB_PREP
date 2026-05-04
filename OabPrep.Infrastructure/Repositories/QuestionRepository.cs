@@ -53,4 +53,24 @@ public sealed class QuestionRepository : IQuestionRepository
 
     public async Task AddAsync(Question question, CancellationToken cancellationToken = default) =>
         await _context.Questions.AddAsync(question, cancellationToken);
+
+    public async Task<IList<Question>> GetActiveForSessionAsync(
+        IReadOnlyList<int>? lawAreaIds,
+        IReadOnlyCollection<int>? excludeQuestionIds,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.Questions
+            .Include(q => q.LawArea)
+            .Include(q => q.Alternatives)
+            .Where(q => q.IsActive)
+            .AsQueryable();
+
+        if (lawAreaIds is { Count: > 0 })
+            query = query.Where(q => lawAreaIds.Contains(q.LawAreaId));
+
+        if (excludeQuestionIds is { Count: > 0 })
+            query = query.Where(q => !excludeQuestionIds.Contains(q.Id));
+
+        return await query.ToListAsync(cancellationToken);
+    }
 }

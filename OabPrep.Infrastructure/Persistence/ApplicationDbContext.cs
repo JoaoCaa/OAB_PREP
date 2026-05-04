@@ -18,6 +18,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<LawArea> LawAreas => Set<LawArea>();
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<Alternative> Alternatives => Set<Alternative>();
+    public DbSet<Session> Sessions => Set<Session>();
+    public DbSet<SessionAnswer> SessionAnswers => Set<SessionAnswer>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

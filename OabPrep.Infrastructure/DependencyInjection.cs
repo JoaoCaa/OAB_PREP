@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<ILawAreaRepository, LawAreaRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
+        services.AddScoped<ISessionRepository, SessionRepository>();
         services.AddScoped<IAuditLogService, AuditLogService>();
 
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
