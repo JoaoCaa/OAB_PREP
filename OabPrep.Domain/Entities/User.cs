@@ -23,6 +23,7 @@ public sealed class User : BaseEntity<Guid>
     public string Name { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
+    public string Role { get; private set; } = "User";
     public bool EmailConfirmed { get; private set; }
     public bool IsActive { get; private set; }
 

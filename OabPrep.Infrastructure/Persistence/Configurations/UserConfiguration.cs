@@ -24,6 +24,11 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.PasswordHash)
             .IsRequired();
 
+        builder.Property(u => u.Role)
+            .IsRequired()
+            .HasMaxLength(50)
+            .HasDefaultValue("User");
+
         builder.Property(u => u.EmailConfirmed)
             .IsRequired()
             .HasDefaultValue(false);

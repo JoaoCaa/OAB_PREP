@@ -91,6 +91,7 @@ public class GlobalExceptionMiddleware
 
         var (statusCode, message) = exception switch
         {
+            NotFoundException ex => (HttpStatusCode.NotFound, ex.Message),
             SamePasswordException ex => (HttpStatusCode.BadRequest, ex.Message),
             UnauthorizedException ex => (HttpStatusCode.Unauthorized, ex.Message),
             InvalidTokenException ex => (HttpStatusCode.BadRequest, ex.Message),

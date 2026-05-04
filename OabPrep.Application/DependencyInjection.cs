@@ -8,6 +8,11 @@ using OabPrep.Application.UseCases.Auth.Logout;
 using OabPrep.Application.UseCases.Auth.Refresh;
 using OabPrep.Application.UseCases.Auth.Register;
 using OabPrep.Application.UseCases.Auth.ResetPassword;
+using OabPrep.Application.UseCases.LawAreas.Create;
+using OabPrep.Application.UseCases.LawAreas.Deactivate;
+using OabPrep.Application.UseCases.LawAreas.GetLawAreaById;
+using OabPrep.Application.UseCases.LawAreas.GetLawAreas;
+using OabPrep.Application.UseCases.LawAreas.Update;
 using System.Reflection;
 
 namespace OabPrep.Application;
@@ -28,6 +33,12 @@ public static class DependencyInjection
         services.AddScoped<ResetPasswordUseCase>();
         services.AddScoped<RefreshTokenUseCase>();
         services.AddScoped<LogoutUseCase>();
+
+        services.AddScoped<GetLawAreasUseCase>();
+        services.AddScoped<GetLawAreaByIdUseCase>();
+        services.AddScoped<CreateLawAreaUseCase>();
+        services.AddScoped<UpdateLawAreaUseCase>();
+        services.AddScoped<DeactivateLawAreaUseCase>();
 
         return services;
     }

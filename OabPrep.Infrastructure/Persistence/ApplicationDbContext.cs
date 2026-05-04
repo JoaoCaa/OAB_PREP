@@ -15,6 +15,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<EmailToken> EmailTokens => Set<EmailToken>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<LawArea> LawAreas => Set<LawArea>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
