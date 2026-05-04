@@ -64,6 +64,46 @@ public sealed class SessionRepository : ISessionRepository
             .Include(a => a.Session)
             .FirstOrDefaultAsync(a => a.SessionId == sessionId && a.QuestionId == questionId, cancellationToken);
 
+    public async Task<(int TotalSessions, decimal AvgTimePerQuestion)> GetSummaryStatsAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var totalSessions = await _context.Sessions
+            .CountAsync(s => s.UserId == userId, cancellationToken);
+
+        var avgTime = await _context.SessionAnswers
+            .Where(a => a.Session!.UserId == userId && a.TimeSpentSeconds.HasValue)
+            .AverageAsync(a => (double?)a.TimeSpentSeconds, cancellationToken);
+
+        return (totalSessions, avgTime.HasValue ? Math.Round((decimal)avgTime.Value, 2) : 0m);
+    }
+
+    public async Task<IList<DailyTrendPoint>> GetTrendAsync(
+        Guid userId,
+        DateTime? since,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.SessionAnswers
+            .Where(a => a.Session!.UserId == userId && a.IsCorrect.HasValue && a.AnsweredAt.HasValue);
+
+        if (since.HasValue)
+            query = query.Where(a => a.AnsweredAt >= since.Value);
+
+        var raw = await query
+            .GroupBy(a => a.AnsweredAt!.Value.Date)
+            .Select(g => new
+            {
+                Date = g.Key,
+                Total = g.Count(),
+                Correct = g.Count(a => a.IsCorrect == true)
+            })
+            .OrderBy(x => x.Date)
+            .ToListAsync(cancellationToken);
+
+        return raw.Select(r => new DailyTrendPoint(DateOnly.FromDateTime(r.Date), r.Total, r.Correct))
+                  .ToList();
+    }
+
     public async Task<IReadOnlyCollection<int>> GetCorrectlyAnsweredQuestionIdsAsync(
         Guid userId,
         CancellationToken cancellationToken = default)

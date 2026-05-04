@@ -18,6 +18,7 @@ using OabPrep.Application.UseCases.Questions.Deactivate;
 using OabPrep.Application.UseCases.Questions.GetById;
 using OabPrep.Application.UseCases.Questions.GetList;
 using OabPrep.Application.UseCases.Questions.Update;
+using OabPrep.Application.UseCases.Performance.GetUserPerformance;
 using OabPrep.Application.UseCases.Sessions.CreateSession;
 using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.GetSession;
@@ -61,6 +62,7 @@ public static class DependencyInjection
         services.AddScoped<FinishSessionUseCase>();
         services.AddScoped<ToggleReviewMarkUseCase>();
         services.AddScoped<GetSessionUseCase>();
+        services.AddScoped<GetUserPerformanceUseCase>();
 
         return services;
     }

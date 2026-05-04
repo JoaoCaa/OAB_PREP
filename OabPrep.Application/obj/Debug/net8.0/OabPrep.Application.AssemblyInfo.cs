@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OabPrep.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47fa8a85dd6cda6372a2ae402b735646dde02fa5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dab47f3efa4fc5152901a5e9f3baaaafd8c7839d")]
 [assembly: System.Reflection.AssemblyProductAttribute("OabPrep.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OabPrep.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

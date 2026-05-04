@@ -3,6 +3,7 @@ using OabPrep.Domain.Entities;
 namespace OabPrep.Application.Common.Interfaces;
 
 public record AreaAnswerStats(int LawAreaId, string LawAreaName, int Total, int Correct);
+public record DailyTrendPoint(DateOnly Date, int Total, int Correct);
 
 public interface ISessionRepository
 {
@@ -13,4 +14,6 @@ public interface ISessionRepository
     Task<IList<AreaAnswerStats>> GetAreaStatsForUserAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<SessionAnswer?> FindSessionAnswerAsync(int sessionId, int questionId, CancellationToken cancellationToken = default);
     Task<Session?> FindByIdFullAsync(int id, CancellationToken cancellationToken = default);
+    Task<(int TotalSessions, decimal AvgTimePerQuestion)> GetSummaryStatsAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<IList<DailyTrendPoint>> GetTrendAsync(Guid userId, DateTime? since, CancellationToken cancellationToken = default);
 }
