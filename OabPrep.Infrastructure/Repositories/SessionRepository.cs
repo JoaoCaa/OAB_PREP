@@ -104,6 +104,50 @@ public sealed class SessionRepository : ISessionRepository
                   .ToList();
     }
 
+    public async Task<IList<WrongQuestionData>> GetRecentWrongQuestionsAsync(
+        Guid userId,
+        int lawAreaId,
+        int limit,
+        CancellationToken cancellationToken = default)
+    {
+        var raw = await _context.SessionAnswers
+            .Where(a => a.Session!.UserId == userId
+                     && a.IsCorrect == false
+                     && a.Question!.LawAreaId == lawAreaId
+                     && a.AnsweredAt.HasValue)
+            .OrderByDescending(a => a.AnsweredAt)
+            .Take(limit)
+            .Select(a => new { a.QuestionId, Statement = a.Question!.Statement, a.AnsweredAt })
+            .ToListAsync(cancellationToken);
+
+        return raw.Select(r => new WrongQuestionData(r.QuestionId, r.Statement, r.AnsweredAt!.Value))
+                  .ToList();
+    }
+
+    public async Task<IList<DailyTrendPoint>> GetAreaEvolutionAsync(
+        Guid userId,
+        int lawAreaId,
+        CancellationToken cancellationToken = default)
+    {
+        var raw = await _context.SessionAnswers
+            .Where(a => a.Session!.UserId == userId
+                     && a.IsCorrect.HasValue
+                     && a.AnsweredAt.HasValue
+                     && a.Question!.LawAreaId == lawAreaId)
+            .GroupBy(a => a.AnsweredAt!.Value.Date)
+            .Select(g => new
+            {
+                Date = g.Key,
+                Total = g.Count(),
+                Correct = g.Count(a => a.IsCorrect == true)
+            })
+            .OrderBy(x => x.Date)
+            .ToListAsync(cancellationToken);
+
+        return raw.Select(r => new DailyTrendPoint(DateOnly.FromDateTime(r.Date), r.Total, r.Correct))
+                  .ToList();
+    }
+
     public async Task<IReadOnlyCollection<int>> GetCorrectlyAnsweredQuestionIdsAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
