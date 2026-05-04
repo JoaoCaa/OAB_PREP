@@ -11,6 +11,7 @@ public sealed class Session : BaseEntity<int>
 
     public Guid UserId { get; private set; }
     public SessionStatus Status { get; private set; } = SessionStatus.InProgress;
+    public int CorrectAnswers { get; private set; }
 
     public IReadOnlyList<SessionAnswer> Answers => _answers.AsReadOnly();
 
@@ -26,6 +27,12 @@ public sealed class Session : BaseEntity<int>
             session._answers.Add(SessionAnswer.CreatePending(qId));
 
         return session;
+    }
+
+    public void IncrementCorrectAnswers()
+    {
+        CorrectAnswers++;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void Complete()

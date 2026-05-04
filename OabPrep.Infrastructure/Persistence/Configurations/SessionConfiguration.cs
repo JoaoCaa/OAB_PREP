@@ -14,6 +14,7 @@ public sealed class SessionConfiguration : IEntityTypeConfiguration<Session>
 
         builder.Property(s => s.UserId).IsRequired();
         builder.Property(s => s.Status).IsRequired();
+        builder.Property(s => s.CorrectAnswers).IsRequired().HasDefaultValue(0);
         builder.Property(s => s.CreatedAt).IsRequired();
         builder.Property(s => s.UpdatedAt);
 

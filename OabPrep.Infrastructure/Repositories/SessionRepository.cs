@@ -14,6 +14,11 @@ public sealed class SessionRepository : ISessionRepository
     public async Task AddAsync(Session session, CancellationToken cancellationToken = default) =>
         await _context.Sessions.AddAsync(session, cancellationToken);
 
+    public Task<Session?> FindByIdWithAnswersAsync(int id, CancellationToken cancellationToken = default) =>
+        _context.Sessions
+            .Include(s => s.Answers)
+            .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
     public async Task<IReadOnlyCollection<int>> GetCorrectlyAnsweredQuestionIdsAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
