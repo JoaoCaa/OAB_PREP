@@ -26,6 +26,16 @@ public sealed class SessionRepository : ISessionRepository
                     .ThenInclude(q => q!.LawArea)
             .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
 
+    public Task<Session?> FindByIdFullAsync(int id, CancellationToken cancellationToken = default) =>
+        _context.Sessions
+            .Include(s => s.Answers)
+                .ThenInclude(a => a.Question)
+                    .ThenInclude(q => q!.LawArea)
+            .Include(s => s.Answers)
+                .ThenInclude(a => a.Question)
+                    .ThenInclude(q => q!.Alternatives)
+            .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
     public async Task<IList<AreaAnswerStats>> GetAreaStatsForUserAsync(
         Guid userId,
         CancellationToken cancellationToken = default)
