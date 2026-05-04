@@ -19,4 +19,5 @@ public interface ISessionRepository
     Task<IList<DailyTrendPoint>> GetTrendAsync(Guid userId, DateTime? since, CancellationToken cancellationToken = default);
     Task<IList<WrongQuestionData>> GetRecentWrongQuestionsAsync(Guid userId, int lawAreaId, int limit, CancellationToken cancellationToken = default);
     Task<IList<DailyTrendPoint>> GetAreaEvolutionAsync(Guid userId, int lawAreaId, CancellationToken cancellationToken = default);
+    Task<Dictionary<Guid, int>> GetSessionCountsByUserIdsAsync(IList<Guid> userIds, CancellationToken cancellationToken = default);
 }

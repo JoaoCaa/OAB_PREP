@@ -22,4 +22,11 @@ public sealed class UserPerformanceCacheRepository : IUserPerformanceCacheReposi
         UserPerformanceCache cache,
         CancellationToken cancellationToken = default) =>
         await _context.UserPerformanceCaches.AddAsync(cache, cancellationToken);
+
+    public async Task<Dictionary<Guid, int>> GetTotalAnsweredByUserIdsAsync(
+        IList<Guid> userIds,
+        CancellationToken cancellationToken = default) =>
+        await _context.UserPerformanceCaches
+            .Where(c => userIds.Contains(c.UserId) && !c.LawAreaId.HasValue)
+            .ToDictionaryAsync(c => c.UserId, c => c.TotalAnswered, cancellationToken);
 }

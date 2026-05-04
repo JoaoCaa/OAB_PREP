@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OabPrep.Application.Common.Interfaces;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
 
@@ -103,6 +105,17 @@ public static class ServiceCollectionExtensions
                         Encoding.UTF8.GetBytes(
                             configuration["Jwt:Key"]
                             ?? throw new InvalidOperationException("Jwt:Key não configurado")))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async ctx =>
+                    {
+                        var idClaim = ctx.Principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+                        if (!Guid.TryParse(idClaim, out var userId)) { ctx.Fail("Invalid token."); return; }
+                        var repo = ctx.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
+                        var user = await repo.FindByIdAsync(userId, ctx.HttpContext.RequestAborted);
+                        if (user is null || !user.IsActive) ctx.Fail("Conta inativa ou bloqueada.");
+                    }
                 };
             });
 

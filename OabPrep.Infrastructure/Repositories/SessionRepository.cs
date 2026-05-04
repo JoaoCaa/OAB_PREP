@@ -148,6 +148,17 @@ public sealed class SessionRepository : ISessionRepository
                   .ToList();
     }
 
+    public async Task<Dictionary<Guid, int>> GetSessionCountsByUserIdsAsync(
+        IList<Guid> userIds,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Sessions
+            .Where(s => userIds.Contains(s.UserId))
+            .GroupBy(s => s.UserId)
+            .Select(g => new { UserId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.UserId, x => x.Count, cancellationToken);
+    }
+
     public async Task<IReadOnlyCollection<int>> GetCorrectlyAnsweredQuestionIdsAsync(
         Guid userId,
         CancellationToken cancellationToken = default)

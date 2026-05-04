@@ -22,4 +22,25 @@ public sealed class UserRepository : IUserRepository
 
     public Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken = default) =>
         _context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+
+    public async Task<(IList<User> Users, int TotalCount)> GetPagedAsync(
+        string? search,
+        int page,
+        int size,
+        CancellationToken cancellationToken = default)
+    {
+        var query = _context.Users.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(u => u.Email.Contains(search) || u.Name.Contains(search));
+
+        var total = await query.CountAsync(cancellationToken);
+        var users = await query
+            .OrderBy(u => u.CreatedAt)
+            .Skip((page - 1) * size)
+            .Take(size)
+            .ToListAsync(cancellationToken);
+
+        return (users, total);
+    }
 }

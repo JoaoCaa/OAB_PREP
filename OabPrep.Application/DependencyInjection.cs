@@ -18,6 +18,7 @@ using OabPrep.Application.UseCases.Questions.Deactivate;
 using OabPrep.Application.UseCases.Questions.GetById;
 using OabPrep.Application.UseCases.Questions.GetList;
 using OabPrep.Application.UseCases.Questions.Update;
+using OabPrep.Application.UseCases.Admin.Users;
 using OabPrep.Application.UseCases.Performance.GetAreaPerformance;
 using OabPrep.Application.UseCases.Performance.GetUserPerformance;
 using OabPrep.Application.UseCases.Profile.ChangePassword;
@@ -71,6 +72,12 @@ public static class DependencyInjection
         services.AddScoped<GetSessionUseCase>();
         services.AddScoped<GetUserPerformanceUseCase>();
         services.AddScoped<GetAreaPerformanceUseCase>();
+
+        services.AddScoped<ListUsersUseCase>();
+        services.AddScoped<GetAdminUserUseCase>();
+        services.AddScoped<BlockUserUseCase>();
+        services.AddScoped<UnblockUserUseCase>();
+        services.AddScoped<ChangeUserRoleUseCase>();
 
         services.AddScoped<GetProfileUseCase>();
         services.AddScoped<UpdateProfileUseCase>();

@@ -49,6 +49,24 @@ public sealed class User : BaseEntity<Guid>
         UpdatedAt = DateTime.UtcNow;
     }
 
+    public void Block()
+    {
+        IsActive = false;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Unblock()
+    {
+        IsActive = true;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void ChangeRole(string role)
+    {
+        Role = role;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
     public void Anonymize()
     {
         Name = "Usuário Removido";
