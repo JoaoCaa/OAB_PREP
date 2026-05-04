@@ -11,4 +11,9 @@ public interface IAuditLogService
         string action,
         string? details = null,
         CancellationToken cancellationToken = default);
+
+    Task<DateTime?> GetLastActionDateAsync(
+        Guid userId,
+        string action,
+        CancellationToken cancellationToken = default);
 }

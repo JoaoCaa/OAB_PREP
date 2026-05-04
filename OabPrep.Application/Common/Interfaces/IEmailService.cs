@@ -13,4 +13,11 @@ public interface IEmailService
         string name,
         string resetToken,
         CancellationToken cancellationToken = default);
+
+    Task SendDataExportEmailAsync(
+        string to,
+        string name,
+        string downloadUrl,
+        DateTime expiresAt,
+        CancellationToken cancellationToken = default);
 }

@@ -45,6 +45,8 @@ public static class DependencyInjection
         services.AddSingleton<ILoginAttemptService, LoginAttemptService>();
         services.AddSingleton<IPasswordResetRateLimitService, PasswordResetRateLimitService>();
 
+        services.AddScoped<IDataExportJob, DataExportJob>();
+
         services.AddHostedService<BackgroundTaskProcessor>();
         services.AddHostedService<CleanupExpiredTokensService>();
 

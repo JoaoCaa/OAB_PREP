@@ -5,6 +5,7 @@ using OabPrep.Application.UseCases.Performance.GetUserPerformance;
 using OabPrep.Application.UseCases.Profile.ChangePassword;
 using OabPrep.Application.UseCases.Profile.DeleteAccount;
 using OabPrep.Application.UseCases.Profile.GetProfile;
+using OabPrep.Application.UseCases.Profile.RequestDataExport;
 using OabPrep.Application.UseCases.Profile.UpdateProfile;
 using OabPrep.Application.UseCases.Profile.UploadAvatar;
 using System.Security.Claims;
@@ -23,6 +24,7 @@ public sealed class UsersController : ControllerBase
     private readonly ChangePasswordUseCase _changePasswordUseCase;
     private readonly UploadAvatarUseCase _uploadAvatarUseCase;
     private readonly DeleteAccountUseCase _deleteAccountUseCase;
+    private readonly RequestDataExportUseCase _requestDataExportUseCase;
 
     public UsersController(
         GetUserPerformanceUseCase getPerformanceUseCase,
@@ -31,7 +33,8 @@ public sealed class UsersController : ControllerBase
         UpdateProfileUseCase updateProfileUseCase,
         ChangePasswordUseCase changePasswordUseCase,
         UploadAvatarUseCase uploadAvatarUseCase,
-        DeleteAccountUseCase deleteAccountUseCase)
+        DeleteAccountUseCase deleteAccountUseCase,
+        RequestDataExportUseCase requestDataExportUseCase)
     {
         _getPerformanceUseCase = getPerformanceUseCase;
         _getAreaPerformanceUseCase = getAreaPerformanceUseCase;
@@ -40,6 +43,7 @@ public sealed class UsersController : ControllerBase
         _changePasswordUseCase = changePasswordUseCase;
         _uploadAvatarUseCase = uploadAvatarUseCase;
         _deleteAccountUseCase = deleteAccountUseCase;
+        _requestDataExportUseCase = requestDataExportUseCase;
     }
 
     [HttpGet("me")]
@@ -98,6 +102,16 @@ public sealed class UsersController : ControllerBase
     {
         await _deleteAccountUseCase.ExecuteAsync(GetUserId(), cancellationToken);
         return NoContent();
+    }
+
+    [HttpPost("me/data-export")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    public async Task<IActionResult> RequestDataExport(CancellationToken cancellationToken)
+    {
+        await _requestDataExportUseCase.ExecuteAsync(GetUserId(), cancellationToken);
+        return Accepted();
     }
 
     [HttpGet("me/performance")]

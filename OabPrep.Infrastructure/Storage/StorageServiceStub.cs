@@ -22,6 +22,19 @@ public sealed class StorageServiceStub : IStorageService
         return Task.FromResult(url);
     }
 
+    public Task<string> UploadExportAsync(
+        Guid userId,
+        Stream content,
+        TimeSpan expiry,
+        CancellationToken cancellationToken = default)
+    {
+        var expiresAt = DateTime.UtcNow.Add(expiry);
+        var url = $"https://storage.stub/exports/{userId}/data-export.zip?expires={expiresAt:o}";
+        _logger.LogInformation("[STORAGE STUB] Export upload → {UserId} | Expires: {ExpiresAt} | URL: {Url}",
+            userId, expiresAt, url);
+        return Task.FromResult(url);
+    }
+
     private static string ExtensionFor(string contentType) =>
         contentType == "image/png" ? "png" : "jpg";
 }

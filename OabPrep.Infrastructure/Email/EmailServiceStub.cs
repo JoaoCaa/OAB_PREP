@@ -35,4 +35,18 @@ public sealed class EmailServiceStub : IEmailService
 
         return Task.CompletedTask;
     }
+
+    public Task SendDataExportEmailAsync(
+        string to,
+        string name,
+        string downloadUrl,
+        DateTime expiresAt,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(
+            "[EMAIL STUB] Data export email → {Email} ({Name}) | URL: {Url} | Expires: {ExpiresAt:o}",
+            to, name, downloadUrl, expiresAt);
+
+        return Task.CompletedTask;
+    }
 }

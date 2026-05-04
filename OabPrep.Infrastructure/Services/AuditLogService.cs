@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using OabPrep.Application.Common.Interfaces;
 using OabPrep.Domain.Entities;
 using OabPrep.Infrastructure.Persistence;
@@ -20,4 +21,14 @@ public sealed class AuditLogService : IAuditLogService
         await _context.AuditLogs.AddAsync(entry, cancellationToken);
         // SaveChangesAsync é chamado pelo use case para garantir atomicidade
     }
+
+    public Task<DateTime?> GetLastActionDateAsync(
+        Guid userId,
+        string action,
+        CancellationToken cancellationToken = default) =>
+        _context.AuditLogs
+            .Where(a => a.UserId == userId && a.Action == action)
+            .OrderByDescending(a => a.CreatedAt)
+            .Select(a => (DateTime?)a.CreatedAt)
+            .FirstOrDefaultAsync(cancellationToken);
 }
