@@ -4,6 +4,7 @@ using OabPrep.Application.UseCases.Sessions.CreateSession;
 using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.GetSession;
 using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
+using OabPrep.Application.UseCases.Chat.GetHistory;
 using OabPrep.Application.UseCases.Sessions.ToggleReviewMark;
 using System.Security.Claims;
 
@@ -19,19 +20,22 @@ public sealed class SessionsController : ControllerBase
     private readonly FinishSessionUseCase _finishSessionUseCase;
     private readonly ToggleReviewMarkUseCase _toggleReviewMarkUseCase;
     private readonly GetSessionUseCase _getSessionUseCase;
+    private readonly GetChatHistoryUseCase _getChatHistoryUseCase;
 
     public SessionsController(
         CreateSessionUseCase createSessionUseCase,
         SubmitAnswerUseCase submitAnswerUseCase,
         FinishSessionUseCase finishSessionUseCase,
         ToggleReviewMarkUseCase toggleReviewMarkUseCase,
-        GetSessionUseCase getSessionUseCase)
+        GetSessionUseCase getSessionUseCase,
+        GetChatHistoryUseCase getChatHistoryUseCase)
     {
         _createSessionUseCase = createSessionUseCase;
         _submitAnswerUseCase = submitAnswerUseCase;
         _finishSessionUseCase = finishSessionUseCase;
         _toggleReviewMarkUseCase = toggleReviewMarkUseCase;
         _getSessionUseCase = getSessionUseCase;
+        _getChatHistoryUseCase = getChatHistoryUseCase;
     }
 
     [HttpGet("{sessionId:int}")]
@@ -104,6 +108,18 @@ public sealed class SessionsController : ControllerBase
     {
         var userId = GetUserId();
         var result = await _toggleReviewMarkUseCase.ExecuteAsync(sessionId, questionId, command, userId, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("{sessionId:int}/questions/{questionId:int}/chat")]
+    [ProducesResponseType(typeof(GetChatHistoryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetChatHistory(
+        int sessionId, int questionId, CancellationToken cancellationToken)
+    {
+        var result = await _getChatHistoryUseCase.ExecuteAsync(sessionId, questionId, GetUserId(), cancellationToken);
         return Ok(result);
     }
 
