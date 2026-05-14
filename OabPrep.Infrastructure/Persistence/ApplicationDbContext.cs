@@ -21,6 +21,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Session> Sessions => Set<Session>();
     public DbSet<SessionAnswer> SessionAnswers => Set<SessionAnswer>();
     public DbSet<UserPerformanceCache> UserPerformanceCaches => Set<UserPerformanceCache>();
+    public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

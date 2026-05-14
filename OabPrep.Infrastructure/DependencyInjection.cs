@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using OabPrep.Application.Common.Interfaces;
 using OabPrep.Infrastructure.BackgroundTasks;
 using OabPrep.Infrastructure.Email;
@@ -8,6 +9,7 @@ using OabPrep.Infrastructure.Persistence;
 using OabPrep.Infrastructure.Repositories;
 using OabPrep.Infrastructure.Security;
 using OabPrep.Infrastructure.Services;
+using OabPrep.Infrastructure.Services.Llm;
 using OabPrep.Infrastructure.Storage;
 
 namespace OabPrep.Infrastructure;
@@ -47,10 +49,37 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordResetRateLimitService, PasswordResetRateLimitService>();
 
         services.AddScoped<IDataExportJob, DataExportJob>();
+        services.AddScoped<IChatRepository, ChatRepository>();
 
         services.AddHostedService<BackgroundTaskProcessor>();
         services.AddHostedService<CleanupExpiredTokensService>();
 
+        services.Configure<LlmSettings>(configuration.GetSection("Llm"));
+        RegisterLlmService(services);
+
         return services;
+    }
+
+    private static void RegisterLlmService(IServiceCollection services)
+    {
+        services.AddHttpClient("llm")
+            .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromSeconds(30));
+
+        services.AddScoped<ILlmService>(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<LlmSettings>>().Value;
+            var factory = sp.GetRequiredService<IHttpClientFactory>();
+            var http = factory.CreateClient("llm");
+
+            return settings.Provider switch
+            {
+                LlmProvider.Anthropic =>
+                    new AnthropicLlmService(http, settings.Anthropic),
+                LlmProvider.AzureOpenAI =>
+                    new AzureOpenAiLlmService(http, settings.AzureOpenAI),
+                _ =>
+                    new OpenAiLlmService(http, settings.OpenAI)
+            };
+        });
     }
 }

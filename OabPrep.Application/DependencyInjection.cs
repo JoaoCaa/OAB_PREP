@@ -33,6 +33,7 @@ using OabPrep.Application.UseCases.Sessions.CreateSession;
 using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.GetSession;
 using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
+using OabPrep.Application.UseCases.Chat.SendMessage;
 using OabPrep.Application.UseCases.Sessions.ToggleReviewMark;
 using System.Reflection;
 
@@ -90,6 +91,8 @@ public static class DependencyInjection
         services.AddScoped<UploadAvatarUseCase>();
         services.AddScoped<DeleteAccountUseCase>();
         services.AddScoped<RequestDataExportUseCase>();
+
+        services.AddScoped<SendChatMessageUseCase>();
 
         return services;
     }
