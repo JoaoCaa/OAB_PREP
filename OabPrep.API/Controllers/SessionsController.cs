@@ -5,6 +5,7 @@ using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.GetSession;
 using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
 using OabPrep.Application.UseCases.Chat.GetHistory;
+using OabPrep.Application.UseCases.Chat.SendSessionMessage;
 using OabPrep.Application.UseCases.Sessions.ToggleReviewMark;
 using System.Security.Claims;
 
@@ -21,6 +22,7 @@ public sealed class SessionsController : ControllerBase
     private readonly ToggleReviewMarkUseCase _toggleReviewMarkUseCase;
     private readonly GetSessionUseCase _getSessionUseCase;
     private readonly GetChatHistoryUseCase _getChatHistoryUseCase;
+    private readonly SendSessionChatMessageUseCase _sendSessionChatMessageUseCase;
 
     public SessionsController(
         CreateSessionUseCase createSessionUseCase,
@@ -28,7 +30,8 @@ public sealed class SessionsController : ControllerBase
         FinishSessionUseCase finishSessionUseCase,
         ToggleReviewMarkUseCase toggleReviewMarkUseCase,
         GetSessionUseCase getSessionUseCase,
-        GetChatHistoryUseCase getChatHistoryUseCase)
+        GetChatHistoryUseCase getChatHistoryUseCase,
+        SendSessionChatMessageUseCase sendSessionChatMessageUseCase)
     {
         _createSessionUseCase = createSessionUseCase;
         _submitAnswerUseCase = submitAnswerUseCase;
@@ -36,6 +39,7 @@ public sealed class SessionsController : ControllerBase
         _toggleReviewMarkUseCase = toggleReviewMarkUseCase;
         _getSessionUseCase = getSessionUseCase;
         _getChatHistoryUseCase = getChatHistoryUseCase;
+        _sendSessionChatMessageUseCase = sendSessionChatMessageUseCase;
     }
 
     [HttpGet("{sessionId:int}")]
@@ -108,6 +112,25 @@ public sealed class SessionsController : ControllerBase
     {
         var userId = GetUserId();
         var result = await _toggleReviewMarkUseCase.ExecuteAsync(sessionId, questionId, command, userId, cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpPost("{sessionId:int}/questions/{questionId:int}/chat/messages")]
+    [ProducesResponseType(typeof(SendSessionChatMessageResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+    public async Task<IActionResult> SendChatMessage(
+        int sessionId,
+        int questionId,
+        [FromBody] SendSessionChatMessageCommand command,
+        CancellationToken cancellationToken)
+    {
+        var result = await _sendSessionChatMessageUseCase.ExecuteAsync(
+            sessionId, questionId, command, GetUserId(), cancellationToken);
         return Ok(result);
     }
 

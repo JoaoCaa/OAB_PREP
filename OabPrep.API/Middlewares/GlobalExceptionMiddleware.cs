@@ -74,6 +74,20 @@ public class GlobalExceptionMiddleware
             return;
         }
 
+        if (exception is ChatLimitExceededException chatLimitEx)
+        {
+            context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+            var body = new
+            {
+                status = 429,
+                message = chatLimitEx.Message,
+                limit = chatLimitEx.Limit,
+                timestamp = DateTime.UtcNow
+            };
+            await context.Response.WriteAsync(JsonSerializer.Serialize(body, JsonOptions));
+            return;
+        }
+
         if (exception is RateLimitExceededException rateLimitEx)
         {
             context.Response.StatusCode = StatusCodes.Status429TooManyRequests;

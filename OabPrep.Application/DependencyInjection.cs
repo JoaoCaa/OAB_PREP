@@ -35,6 +35,7 @@ using OabPrep.Application.UseCases.Sessions.GetSession;
 using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
 using OabPrep.Application.UseCases.Chat.GetHistory;
 using OabPrep.Application.UseCases.Chat.SendMessage;
+using OabPrep.Application.UseCases.Chat.SendSessionMessage;
 using OabPrep.Application.UseCases.Sessions.ToggleReviewMark;
 using System.Reflection;
 
@@ -95,6 +96,7 @@ public static class DependencyInjection
 
         services.AddScoped<SendChatMessageUseCase>();
         services.AddScoped<GetChatHistoryUseCase>();
+        services.AddScoped<SendSessionChatMessageUseCase>();
 
         return services;
     }

@@ -2295,6 +2295,7 @@
           "FluentValidation.DependencyInjectionExtensions": "11.5.1",
           "Microsoft.Extensions.Caching.Abstractions": "9.0.4",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0",
           "OabPrep.Domain": "1.0.0"
         },
         "compile": {

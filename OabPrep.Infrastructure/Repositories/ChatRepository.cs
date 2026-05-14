@@ -29,6 +29,12 @@ public sealed class ChatRepository : IChatRepository
             .ToListAsync(ct);
     }
 
+    public Task<int> CountAsync(Guid userId, int sessionId, int questionId, CancellationToken ct = default) =>
+        _context.ChatMessages
+            .CountAsync(m => m.UserId == userId
+                          && m.SessionId == sessionId
+                          && m.QuestionId == questionId, ct);
+
     public async Task<QuestionContext?> GetQuestionContextAsync(
         int questionId, int? sessionId, CancellationToken ct = default)
     {
