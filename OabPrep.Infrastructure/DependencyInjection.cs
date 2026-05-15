@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OabPrep.Application.Common.Interfaces;
 using OabPrep.Infrastructure.BackgroundTasks;
@@ -41,7 +42,17 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddSingleton<IJwtService, JwtService>();
         services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
-        services.AddScoped<IEmailService, EmailServiceStub>();
+        services.Configure<EmailSettings>(configuration.GetSection("Email"));
+        services.AddScoped<SmtpEmailService>(sp =>
+            new SmtpEmailService(
+                sp.GetRequiredService<IOptions<EmailSettings>>().Value,
+                sp.GetRequiredService<ILogger<SmtpEmailService>>()));
+        services.AddScoped<SendGridEmailService>(sp =>
+            new SendGridEmailService(
+                sp.GetRequiredService<IHttpClientFactory>().CreateClient("sendgrid"),
+                sp.GetRequiredService<IOptions<EmailSettings>>().Value,
+                sp.GetRequiredService<ILogger<SendGridEmailService>>()));
+        services.AddScoped<IEmailService, BackgroundEmailService>();
         services.AddScoped<IStorageService, StorageServiceStub>();
 
         services.AddMemoryCache();
@@ -62,6 +73,9 @@ public static class DependencyInjection
 
     private static void RegisterLlmService(IServiceCollection services)
     {
+        services.AddHttpClient("sendgrid")
+            .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromSeconds(30));
+
         services.AddHttpClient("llm")
             .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromSeconds(30));
 
