@@ -40,19 +40,25 @@ public sealed class SmtpEmailService : IEmailService
     {
         var confirmUrl = $"{_settings.AppBaseUrl}/confirmar-email?token={Uri.EscapeDataString(confirmationToken)}";
         return SendAsync(to, name, "Confirme seu e-mail — OAB Prep",
-            EmailTemplates.EmailConfirmation(name, confirmUrl), ct);
+            EmailTemplates.EmailConfirmation(name, confirmUrl, UnsubscribeUrl), ct);
     }
 
     public Task SendPasswordResetEmailAsync(string to, string name, string resetToken, CancellationToken ct = default)
     {
         var resetUrl = $"{_settings.AppBaseUrl}/redefinir-senha?token={Uri.EscapeDataString(resetToken)}";
         return SendAsync(to, name, "Redefinição de senha — OAB Prep",
-            EmailTemplates.PasswordReset(name, resetUrl), ct);
+            EmailTemplates.PasswordReset(name, resetUrl, UnsubscribeUrl), ct);
     }
 
     public Task SendDataExportEmailAsync(string to, string name, string downloadUrl, DateTime expiresAt, CancellationToken ct = default) =>
         SendAsync(to, name, "Seus dados estão prontos — OAB Prep",
-            EmailTemplates.DataExportReady(name, downloadUrl, expiresAt), ct);
+            EmailTemplates.DataExportReady(name, downloadUrl, expiresAt, UnsubscribeUrl), ct);
+
+    public Task SendAccountBlockedEmailAsync(string to, string name, string supportUrl, CancellationToken ct = default) =>
+        SendAsync(to, name, "Sua conta no OAB Prep foi suspensa",
+            EmailTemplates.AccountBlocked(name, supportUrl, UnsubscribeUrl), ct);
+
+    private string UnsubscribeUrl => $"{_settings.AppBaseUrl}/descadastro";
 
     private Task SendAsync(string to, string name, string subject, string htmlBody, CancellationToken ct) =>
         _retry.ExecuteAsync(async token =>
@@ -61,7 +67,9 @@ public sealed class SmtpEmailService : IEmailService
             message.From.Add(new MailboxAddress(_settings.FromName, _settings.From));
             message.To.Add(new MailboxAddress(name, to));
             message.Subject = subject;
-            message.Body = new TextPart("html") { Text = htmlBody };
+
+            var builder = new BodyBuilder { HtmlBody = htmlBody };
+            message.Body = builder.ToMessageBody();
 
             using var client = new SmtpClient();
             var secureOption = _settings.Smtp.UseSsl

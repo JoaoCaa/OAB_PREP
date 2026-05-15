@@ -20,4 +20,10 @@ public interface IEmailService
         string downloadUrl,
         DateTime expiresAt,
         CancellationToken cancellationToken = default);
+
+    Task SendAccountBlockedEmailAsync(
+        string to,
+        string name,
+        string supportUrl,
+        CancellationToken cancellationToken = default);
 }

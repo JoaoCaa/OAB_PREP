@@ -49,4 +49,17 @@ public sealed class EmailServiceStub : IEmailService
 
         return Task.CompletedTask;
     }
+
+    public Task SendAccountBlockedEmailAsync(
+        string to,
+        string name,
+        string supportUrl,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation(
+            "[EMAIL STUB] Account blocked email → {Email} ({Name}) | Support: {SupportUrl}",
+            to, name, supportUrl);
+
+        return Task.CompletedTask;
+    }
 }

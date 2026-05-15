@@ -46,6 +46,13 @@ public sealed class BackgroundEmailService : IEmailService
         return Task.CompletedTask;
     }
 
+    public Task SendAccountBlockedEmailAsync(string to, string name, string supportUrl, CancellationToken ct = default)
+    {
+        Enqueue(to, async (inner, bgCt) =>
+            await inner.SendAccountBlockedEmailAsync(to, name, supportUrl, bgCt));
+        return Task.CompletedTask;
+    }
+
     private void Enqueue(string recipient, Func<IEmailService, CancellationToken, Task> send)
     {
         var provider = _provider;
