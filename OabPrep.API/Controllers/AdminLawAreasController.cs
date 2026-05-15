@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using OabPrep.API.Extensions;
 using OabPrep.Application.UseCases.LawAreas;
 using OabPrep.Application.UseCases.LawAreas.Create;
 using OabPrep.Application.UseCases.LawAreas.Deactivate;
@@ -10,6 +12,7 @@ namespace OabPrep.API.Controllers;
 [ApiController]
 [Route("api/v1/admin/law-areas")]
 [Authorize(Roles = "Admin")]
+[EnableRateLimiting(RateLimitPolicies.Standard)]
 public sealed class AdminLawAreasController : ControllerBase
 {
     private readonly CreateLawAreaUseCase _createUseCase;

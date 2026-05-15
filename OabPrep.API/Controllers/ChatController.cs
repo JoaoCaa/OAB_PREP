@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using OabPrep.API.Extensions;
 using OabPrep.Application.UseCases.Chat.SendMessage;
 using System.Security.Claims;
 
@@ -8,6 +10,7 @@ namespace OabPrep.API.Controllers;
 [ApiController]
 [Route("api/v1/chat")]
 [Authorize]
+[EnableRateLimiting(RateLimitPolicies.Chat)]
 public sealed class ChatController : ControllerBase
 {
     private readonly SendChatMessageUseCase _sendMessageUseCase;

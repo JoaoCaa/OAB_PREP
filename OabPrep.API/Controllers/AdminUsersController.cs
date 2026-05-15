@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using OabPrep.API.Extensions;
 using OabPrep.Application.Common.Models;
 using OabPrep.Application.UseCases.Admin.Users;
 using OabPrep.Domain.Constants;
@@ -10,6 +12,7 @@ namespace OabPrep.API.Controllers;
 [ApiController]
 [Route("api/v1/admin/users")]
 [Authorize(Roles = UserRoles.Admin)]
+[EnableRateLimiting(RateLimitPolicies.Standard)]
 public sealed class AdminUsersController : ControllerBase
 {
     private readonly ListUsersUseCase _listUsersUseCase;

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using OabPrep.API.Extensions;
 using OabPrep.Application.UseCases.LawAreas;
 using OabPrep.Application.UseCases.LawAreas.GetLawAreaById;
 using OabPrep.Application.UseCases.LawAreas.GetLawAreas;
@@ -7,6 +9,7 @@ namespace OabPrep.API.Controllers;
 
 [ApiController]
 [Route("api/v1/law-areas")]
+[EnableRateLimiting(RateLimitPolicies.Public)]
 public sealed class LawAreasController : ControllerBase
 {
     private readonly GetLawAreasUseCase _getLawAreasUseCase;

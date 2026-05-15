@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using OabPrep.API.Extensions;
 using OabPrep.Application.Common.Models;
 using OabPrep.Application.UseCases.Questions;
 using OabPrep.Application.UseCases.Questions.Create;
@@ -14,6 +16,7 @@ namespace OabPrep.API.Controllers;
 [ApiController]
 [Route("api/v1/admin/questions")]
 [Authorize(Roles = "Admin")]
+[EnableRateLimiting(RateLimitPolicies.Standard)]
 public sealed class AdminQuestionsController : ControllerBase
 {
     private readonly CreateQuestionUseCase _createUseCase;

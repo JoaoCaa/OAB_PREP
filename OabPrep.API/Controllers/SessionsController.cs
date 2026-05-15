@@ -4,6 +4,8 @@ using OabPrep.Application.UseCases.Sessions.CreateSession;
 using OabPrep.Application.UseCases.Sessions.FinishSession;
 using OabPrep.Application.UseCases.Sessions.GetSession;
 using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
+using Microsoft.AspNetCore.RateLimiting;
+using OabPrep.API.Extensions;
 using OabPrep.Application.UseCases.Chat.GetHistory;
 using OabPrep.Application.UseCases.Chat.SendSessionMessage;
 using OabPrep.Application.UseCases.Sessions.ToggleReviewMark;
@@ -14,6 +16,7 @@ namespace OabPrep.API.Controllers;
 [ApiController]
 [Route("api/v1/sessions")]
 [Authorize]
+[EnableRateLimiting(RateLimitPolicies.Standard)]
 public sealed class SessionsController : ControllerBase
 {
     private readonly CreateSessionUseCase _createSessionUseCase;
@@ -116,6 +119,7 @@ public sealed class SessionsController : ControllerBase
     }
 
     [HttpPost("{sessionId:int}/questions/{questionId:int}/chat/messages")]
+    [EnableRateLimiting(RateLimitPolicies.Chat)]
     [ProducesResponseType(typeof(SendSessionChatMessageResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

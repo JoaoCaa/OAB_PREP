@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using OabPrep.API.Extensions;
 using OabPrep.Application.UseCases.Performance.GetAreaPerformance;
 using OabPrep.Application.UseCases.Performance.GetUserPerformance;
 using OabPrep.Application.UseCases.Profile.ChangePassword;
@@ -15,6 +17,7 @@ namespace OabPrep.API.Controllers;
 [ApiController]
 [Route("api/v1/users")]
 [Authorize]
+[EnableRateLimiting(RateLimitPolicies.Standard)]
 public sealed class UsersController : ControllerBase
 {
     private readonly GetUserPerformanceUseCase _getPerformanceUseCase;
