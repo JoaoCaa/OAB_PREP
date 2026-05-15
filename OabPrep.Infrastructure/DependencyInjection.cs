@@ -65,6 +65,12 @@ public static class DependencyInjection
         services.AddHostedService<BackgroundTaskProcessor>();
         services.AddHostedService<CleanupExpiredTokensService>();
 
+        services.Configure<GoogleSettings>(configuration.GetSection("Google"));
+        services.AddScoped<IGoogleOAuthService>(sp =>
+            new GoogleOAuthService(
+                sp.GetRequiredService<IHttpClientFactory>().CreateClient("google"),
+                sp.GetRequiredService<IOptions<GoogleSettings>>()));
+
         services.Configure<LlmSettings>(configuration.GetSection("Llm"));
         RegisterLlmService(services);
 
@@ -75,6 +81,9 @@ public static class DependencyInjection
     {
         services.AddHttpClient("sendgrid")
             .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromSeconds(30));
+
+        services.AddHttpClient("google")
+            .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromSeconds(10));
 
         services.AddHttpClient("llm")
             .ConfigureHttpClient(c => c.Timeout = TimeSpan.FromSeconds(30));

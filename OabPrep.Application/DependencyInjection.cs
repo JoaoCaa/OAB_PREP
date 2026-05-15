@@ -36,6 +36,7 @@ using OabPrep.Application.UseCases.Sessions.SubmitAnswer;
 using OabPrep.Application.UseCases.Chat.GetHistory;
 using OabPrep.Application.UseCases.Chat.SendMessage;
 using OabPrep.Application.UseCases.Chat.SendSessionMessage;
+using OabPrep.Application.UseCases.Auth.OAuthGoogle;
 using OabPrep.Application.UseCases.Sessions.ToggleReviewMark;
 using System.Reflection;
 
@@ -57,6 +58,7 @@ public static class DependencyInjection
         services.AddScoped<ResetPasswordUseCase>();
         services.AddScoped<RefreshTokenUseCase>();
         services.AddScoped<LogoutUseCase>();
+        services.AddScoped<OAuthGoogleUseCase>();
 
         services.AddScoped<GetLawAreasUseCase>();
         services.AddScoped<GetLawAreaByIdUseCase>();

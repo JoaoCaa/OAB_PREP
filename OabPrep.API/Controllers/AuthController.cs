@@ -8,6 +8,7 @@ using OabPrep.Application.UseCases.Auth.Login;
 using OabPrep.Application.UseCases.Auth.Logout;
 using OabPrep.Application.UseCases.Auth.Refresh;
 using OabPrep.Application.UseCases.Auth.Register;
+using OabPrep.Application.UseCases.Auth.OAuthGoogle;
 using OabPrep.Application.UseCases.Auth.ResetPassword;
 using System.Security.Claims;
 
@@ -24,6 +25,7 @@ public sealed class AuthController : ControllerBase
     private readonly ResetPasswordUseCase _resetPasswordUseCase;
     private readonly RefreshTokenUseCase _refreshTokenUseCase;
     private readonly LogoutUseCase _logoutUseCase;
+    private readonly OAuthGoogleUseCase _oAuthGoogleUseCase;
 
     public AuthController(
         RegisterUserUseCase registerUseCase,
@@ -32,7 +34,8 @@ public sealed class AuthController : ControllerBase
         ForgotPasswordUseCase forgotPasswordUseCase,
         ResetPasswordUseCase resetPasswordUseCase,
         RefreshTokenUseCase refreshTokenUseCase,
-        LogoutUseCase logoutUseCase)
+        LogoutUseCase logoutUseCase,
+        OAuthGoogleUseCase oAuthGoogleUseCase)
     {
         _registerUseCase = registerUseCase;
         _confirmEmailUseCase = confirmEmailUseCase;
@@ -41,6 +44,7 @@ public sealed class AuthController : ControllerBase
         _resetPasswordUseCase = resetPasswordUseCase;
         _refreshTokenUseCase = refreshTokenUseCase;
         _logoutUseCase = logoutUseCase;
+        _oAuthGoogleUseCase = oAuthGoogleUseCase;
     }
 
     [HttpPost("register")]
@@ -116,6 +120,18 @@ public sealed class AuthController : ControllerBase
         CancellationToken cancellationToken)
     {
         var response = await _refreshTokenUseCase.ExecuteAsync(command, cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpPost("oauth/google")]
+    [EnableRateLimiting(RateLimitPolicies.AuthStrict)]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> OAuthGoogle(
+        [FromBody] OAuthGoogleCommand command,
+        CancellationToken cancellationToken)
+    {
+        var response = await _oAuthGoogleUseCase.ExecuteAsync(command, cancellationToken);
         return Ok(response);
     }
 

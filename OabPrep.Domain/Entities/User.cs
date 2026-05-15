@@ -20,6 +20,18 @@ public sealed class User : BaseEntity<Guid>
         };
     }
 
+    public static User CreateOAuth(string name, string email) =>
+        new()
+        {
+            Id = Guid.NewGuid(),
+            Name = name,
+            Email = email.ToLowerInvariant(),
+            PasswordHash = "OAUTH",
+            EmailConfirmed = true,
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow
+        };
+
     public string Name { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
     public string PasswordHash { get; private set; } = string.Empty;
@@ -29,6 +41,7 @@ public sealed class User : BaseEntity<Guid>
     public string? AvatarUrl { get; private set; }
 
     public void ConfirmEmail() => EmailConfirmed = true;
+    public void RecordLogin() => UpdatedAt = DateTime.UtcNow;
     public void Deactivate() => IsActive = false;
 
     public void UpdatePassword(string newPasswordHash)
