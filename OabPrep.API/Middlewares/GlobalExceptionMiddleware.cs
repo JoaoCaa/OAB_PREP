@@ -1,11 +1,13 @@
 using FluentValidation;
 using OabPrep.Application.Common.Exceptions;
+using System.Diagnostics;
 using System.Net;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace OabPrep.API.Middlewares;
 
-public class GlobalExceptionMiddleware
+public sealed class GlobalExceptionMiddleware
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -29,62 +31,66 @@ public class GlobalExceptionMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception for {Method} {Path}",
-                context.Request.Method, context.Request.Path);
-            await HandleExceptionAsync(context, ex);
+            var traceId = Activity.Current?.Id ?? context.TraceIdentifier;
+            var userId = context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            _logger.LogError(ex,
+                "Unhandled exception TraceId={TraceId} UserId={UserId} {Method} {Path}",
+                traceId, userId, context.Request.Method, context.Request.Path);
+            await HandleExceptionAsync(context, ex, traceId);
         }
     }
 
-    private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private static async Task HandleExceptionAsync(HttpContext context, Exception exception, string traceId)
     {
-        context.Response.ContentType = "application/json";
+        if (context.Response.HasStarted) return;
+
+        context.Response.ContentType = "application/problem+json";
 
         if (exception is ValidationException validationEx)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-
             var errors = validationEx.Errors
                 .GroupBy(e => e.PropertyName.ToLowerInvariant())
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.Select(e => e.ErrorMessage).ToArray());
-
-            var body = new
+                .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new
             {
+                type = ProblemTypeUri(400),
+                title = "Validation Error",
                 status = 400,
-                title = "One or more validation errors occurred.",
+                detail = "One or more validation errors occurred.",
+                traceId,
                 errors
-            };
-
-            await context.Response.WriteAsync(JsonSerializer.Serialize(body, JsonOptions));
+            }, JsonOptions));
             return;
         }
 
         if (exception is AccountLockedException lockedEx)
         {
             context.Response.StatusCode = 423;
-            var body = new
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new
             {
+                type = ProblemTypeUri(423),
+                title = "Account Locked",
                 status = 423,
-                message = lockedEx.Message,
-                retryAfterSeconds = (int)lockedEx.LockoutRemaining.TotalSeconds,
-                timestamp = DateTime.UtcNow
-            };
-            await context.Response.WriteAsync(JsonSerializer.Serialize(body, JsonOptions));
+                detail = lockedEx.Message,
+                traceId,
+                retryAfterSeconds = (int)lockedEx.LockoutRemaining.TotalSeconds
+            }, JsonOptions));
             return;
         }
 
         if (exception is ChatLimitExceededException chatLimitEx)
         {
             context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-            var body = new
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new
             {
+                type = ProblemTypeUri(429),
+                title = "Chat Limit Exceeded",
                 status = 429,
-                message = chatLimitEx.Message,
-                limit = chatLimitEx.Limit,
-                timestamp = DateTime.UtcNow
-            };
-            await context.Response.WriteAsync(JsonSerializer.Serialize(body, JsonOptions));
+                detail = chatLimitEx.Message,
+                traceId,
+                limit = chatLimitEx.Limit
+            }, JsonOptions));
             return;
         }
 
@@ -92,41 +98,55 @@ public class GlobalExceptionMiddleware
         {
             context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
             context.Response.Headers.RetryAfter = ((int)rateLimitEx.RetryAfter.TotalSeconds).ToString();
-            var body = new
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new
             {
+                type = ProblemTypeUri(429),
+                title = "Too Many Requests",
                 status = 429,
-                message = rateLimitEx.Message,
-                retryAfterSeconds = (int)rateLimitEx.RetryAfter.TotalSeconds,
-                timestamp = DateTime.UtcNow
-            };
-            await context.Response.WriteAsync(JsonSerializer.Serialize(body, JsonOptions));
+                detail = rateLimitEx.Message,
+                traceId,
+                retryAfterSeconds = (int)rateLimitEx.RetryAfter.TotalSeconds
+            }, JsonOptions));
             return;
         }
 
-        var (statusCode, message) = exception switch
+        var (statusCode, title, detail) = exception switch
         {
-            LlmUnavailableException ex => (HttpStatusCode.ServiceUnavailable, ex.Message),
-            NotFoundException ex => (HttpStatusCode.NotFound, ex.Message),
-            FileTooLargeException ex => (HttpStatusCode.RequestEntityTooLarge, ex.Message),
-            ConflictException ex => (HttpStatusCode.Conflict, ex.Message),
-            ForbiddenException ex => (HttpStatusCode.Forbidden, ex.Message),
-            SamePasswordException ex => (HttpStatusCode.BadRequest, ex.Message),
-            UnauthorizedException ex => (HttpStatusCode.Unauthorized, ex.Message),
-            InvalidTokenException ex => (HttpStatusCode.BadRequest, ex.Message),
-            ArgumentException ex => (HttpStatusCode.BadRequest, ex.Message),
-            UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "Não autorizado."),
-            _ => (HttpStatusCode.InternalServerError, "Erro interno do servidor.")
+            LlmUnavailableException ex  => (503, "Service Unavailable", ex.Message),
+            NotFoundException ex        => (404, "Not Found", ex.Message),
+            FileTooLargeException ex    => (413, "Payload Too Large", ex.Message),
+            ConflictException ex        => (409, "Conflict", ex.Message),
+            ForbiddenException ex       => (403, "Forbidden", ex.Message),
+            SamePasswordException ex    => (400, "Bad Request", ex.Message),
+            UnauthorizedException ex    => (401, "Unauthorized", ex.Message),
+            InvalidTokenException ex    => (400, "Bad Request", ex.Message),
+            ArgumentException ex        => (400, "Bad Request", ex.Message),
+            UnauthorizedAccessException => (401, "Unauthorized", "Não autorizado."),
+            _                           => (500, "Internal Server Error", "Erro interno do servidor.")
         };
 
-        context.Response.StatusCode = (int)statusCode;
-
-        var errorBody = new
+        context.Response.StatusCode = statusCode;
+        await context.Response.WriteAsync(JsonSerializer.Serialize(new
         {
-            status = (int)statusCode,
-            message,
-            timestamp = DateTime.UtcNow
-        };
-
-        await context.Response.WriteAsync(JsonSerializer.Serialize(errorBody, JsonOptions));
+            type = ProblemTypeUri(statusCode),
+            title,
+            status = statusCode,
+            detail,
+            traceId
+        }, JsonOptions));
     }
+
+    private static string ProblemTypeUri(int status) => status switch
+    {
+        400 => "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+        401 => "https://tools.ietf.org/html/rfc7235#section-3.1",
+        403 => "https://tools.ietf.org/html/rfc7231#section-6.5.3",
+        404 => "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+        409 => "https://tools.ietf.org/html/rfc7231#section-6.5.8",
+        413 => "https://tools.ietf.org/html/rfc7231#section-6.5.11",
+        423 => "https://tools.ietf.org/html/rfc2616#section-10.4.24",
+        429 => "https://tools.ietf.org/html/rfc6585#section-4",
+        503 => "https://tools.ietf.org/html/rfc7231#section-6.6.4",
+        _   => "https://tools.ietf.org/html/rfc7231#section-6.6.1"
+    };
 }

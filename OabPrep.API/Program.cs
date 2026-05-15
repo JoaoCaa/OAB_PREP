@@ -16,6 +16,7 @@ builder.Services.AddApiServices(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseMiddleware<AuditMiddleware>();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 if (!app.Environment.IsProduction())
