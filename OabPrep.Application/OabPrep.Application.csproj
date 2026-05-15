@@ -19,4 +19,8 @@
     <ProjectReference Include="..\OabPrep.Domain\OabPrep.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="OabPrep.UnitTests" />
+  </ItemGroup>
+
 </Project>
