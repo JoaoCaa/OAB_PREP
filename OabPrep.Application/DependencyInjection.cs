@@ -18,6 +18,7 @@ using OabPrep.Application.UseCases.Questions.Deactivate;
 using OabPrep.Application.UseCases.Questions.GetById;
 using OabPrep.Application.UseCases.Questions.GetList;
 using OabPrep.Application.UseCases.Questions.Update;
+using OabPrep.Application.UseCases.Questions.ImportBatch;
 using OabPrep.Application.UseCases.Admin.Reports.GetQuestionStats;
 using OabPrep.Application.UseCases.Admin.Reports.GetSystemSummary;
 using OabPrep.Application.UseCases.Admin.Users;
@@ -67,6 +68,7 @@ public static class DependencyInjection
         services.AddScoped<DeactivateLawAreaUseCase>();
 
         services.AddScoped<CreateQuestionUseCase>();
+        services.AddScoped<ImportBatchUseCase>();
         services.AddScoped<UpdateQuestionUseCase>();
         services.AddScoped<DeactivateQuestionUseCase>();
         services.AddScoped<GetQuestionsUseCase>();

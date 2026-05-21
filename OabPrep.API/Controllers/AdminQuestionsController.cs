@@ -9,6 +9,7 @@ using OabPrep.Application.UseCases.Questions.Deactivate;
 using OabPrep.Application.UseCases.Questions.GetById;
 using OabPrep.Application.UseCases.Questions.GetList;
 using OabPrep.Application.UseCases.Questions.Update;
+using OabPrep.Application.UseCases.Questions.ImportBatch;
 using System.Security.Claims;
 
 namespace OabPrep.API.Controllers;
@@ -21,6 +22,7 @@ public sealed class AdminQuestionsController : ControllerBase
 {
     private readonly CreateQuestionUseCase _createUseCase;
     private readonly UpdateQuestionUseCase _updateUseCase;
+    private readonly ImportBatchUseCase _importBatchUseCase;
     private readonly DeactivateQuestionUseCase _deactivateUseCase;
     private readonly GetQuestionsUseCase _getListUseCase;
     private readonly GetQuestionByIdUseCase _getByIdUseCase;
@@ -28,12 +30,14 @@ public sealed class AdminQuestionsController : ControllerBase
     public AdminQuestionsController(
         CreateQuestionUseCase createUseCase,
         UpdateQuestionUseCase updateUseCase,
+        ImportBatchUseCase importBatchUseCase,
         DeactivateQuestionUseCase deactivateUseCase,
         GetQuestionsUseCase getListUseCase,
         GetQuestionByIdUseCase getByIdUseCase)
     {
         _createUseCase = createUseCase;
         _updateUseCase = updateUseCase;
+        _importBatchUseCase = importBatchUseCase;
         _deactivateUseCase = deactivateUseCase;
         _getListUseCase = getListUseCase;
         _getByIdUseCase = getByIdUseCase;
@@ -104,6 +108,19 @@ public sealed class AdminQuestionsController : ControllerBase
         var adminId = GetAdminUserId();
         await _deactivateUseCase.ExecuteAsync(id, adminId, cancellationToken);
         return NoContent();
+    }
+
+    [HttpPost("import")]
+    [ProducesResponseType(typeof(ImportBatchResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> ImportBatch(
+        [FromBody] ImportBatchCommand command,
+        CancellationToken cancellationToken)
+    {
+        var adminId = GetAdminUserId();
+        var result = await _importBatchUseCase.ExecuteAsync(command, adminId, cancellationToken);
+        return Ok(result);
     }
 
     private Guid GetAdminUserId() =>

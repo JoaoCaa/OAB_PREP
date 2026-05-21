@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using OabPrep.Application.Common.Interfaces;
 using OabPrep.Domain.Entities;
 using OabPrep.Infrastructure.Persistence;
+using static OabPrep.Application.Common.Interfaces.ILawAreaRepository;
 
 namespace OabPrep.Infrastructure.Repositories;
 
@@ -17,6 +18,25 @@ public sealed class LawAreaRepository : ILawAreaRepository
             .OrderBy(l => l.Name)
             .ToListAsync(cancellationToken)
             .ContinueWith(t => (IList<LawArea>)t.Result, cancellationToken);
+
+    public async Task<IList<LawAreaWithCount>> GetAllActiveWithCountAsync(CancellationToken cancellationToken = default)
+    {
+        var areas = await _context.LawAreas
+            .Where(l => l.IsActive)
+            .OrderBy(l => l.Name)
+            .ToListAsync(cancellationToken);
+
+        var counts = await _context.Questions
+            .Where(q => q.IsActive)
+            .GroupBy(q => q.LawAreaId)
+            .Select(g => new { LawAreaId = g.Key, Count = g.Count() })
+            .ToListAsync(cancellationToken);
+
+        return areas.Select(l => new LawAreaWithCount(
+            l.Id, l.Name, l.Slug, l.Description, l.IconUrl,
+            counts.FirstOrDefault(c => c.LawAreaId == l.Id)?.Count ?? 0
+        )).ToList();
+    }
 
     public Task<LawArea?> FindByIdAsync(int id, CancellationToken cancellationToken = default) =>
         _context.LawAreas.FirstOrDefaultAsync(l => l.Id == id, cancellationToken);

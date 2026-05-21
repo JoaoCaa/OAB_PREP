@@ -12,6 +12,7 @@ using OabPrep.Infrastructure.Security;
 using OabPrep.Infrastructure.Services;
 using OabPrep.Infrastructure.Services.Llm;
 using OabPrep.Infrastructure.Storage;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace OabPrep.Infrastructure;
 
@@ -22,7 +23,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(
+            options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
                 sql => sql.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 

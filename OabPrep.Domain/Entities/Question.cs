@@ -94,12 +94,10 @@ public sealed class Question : BaseEntity<int>
 
     private static void EnsureValidAlternatives(IReadOnlyList<AlternativeData> alternatives)
     {
-        if (alternatives.Count != 5)
-            throw new ArgumentException("A questão deve ter exatamente 5 alternativas.");
-
+        if (alternatives.Count < 3 || alternatives.Count > 5)
+            throw new ArgumentException("A questão deve ter entre 3 e 5 alternativas.");
         if (alternatives.Count(a => a.IsCorrect) != 1)
             throw new ArgumentException("A questão deve ter exatamente 1 alternativa correta.");
-
         if (alternatives.Any(a => string.IsNullOrWhiteSpace(a.Explanation)))
             throw new ArgumentException("Todas as alternativas devem ter uma explicação.");
     }

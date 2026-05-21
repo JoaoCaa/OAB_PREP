@@ -75,12 +75,13 @@ public sealed class LoginUseCase
         await _auditLogService.LogAsync(user.Id, "LOGIN_SUCCESS", cancellationToken: ct);
         await _context.SaveChangesAsync(ct);
 
-        return new LoginResponse(
+       return new LoginResponse(
             accessToken,
             rawRefreshToken,
             (int)expiresIn.TotalSeconds,
             user.Id,
             user.Name,
-            user.Email);
+            user.Email,
+            user.Role);
     }
 }

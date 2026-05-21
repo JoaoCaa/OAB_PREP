@@ -64,6 +64,7 @@ public sealed class OAuthGoogleUseCase
             (int)TimeSpan.FromHours(8).TotalSeconds,
             user.Id,
             user.Name,
-            user.Email);
+            user.Email,
+            user.Role);
     }
 }

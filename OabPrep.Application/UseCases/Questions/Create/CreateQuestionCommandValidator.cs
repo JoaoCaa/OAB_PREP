@@ -19,13 +19,13 @@ public sealed class CreateQuestionCommandValidator : AbstractValidator<CreateQue
 
         RuleFor(x => x.Alternatives)
             .NotNull()
-            .Must(a => a.Count == 5)
-            .WithMessage("A questão deve ter exatamente 5 alternativas.");
+            .Must(a => a.Count >= 3 && a.Count <= 5)
+            .WithMessage("A questão deve ter entre 3 e 5 alternativas.");
 
-        RuleFor(x => x.Alternatives)
-            .Must(a => a.Count(x => x.IsCorrect) == 1)
-            .WithMessage("A questão deve ter exatamente 1 alternativa correta.")
-            .When(x => x.Alternatives?.Count == 5);
+            RuleFor(x => x.Alternatives)
+                .Must(a => a.Count(x => x.IsCorrect) == 1)
+                .WithMessage("A questão deve ter exatamente 1 alternativa correta.")
+                .When(x => x.Alternatives?.Count >= 3);
 
         RuleForEach(x => x.Alternatives).ChildRules(alt =>
         {

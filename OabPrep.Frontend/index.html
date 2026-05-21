@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OAB Prep — Plataforma de Estudos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/styles/design-system.css">
+
+  <!-- Configuração de ambiente -->
+  <script>
+    window.ENV = {
+      API_URL: 'http://localhost:5259',  // ← altere para seu backend
+    };
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="module">
+    import Router from './src/utils/router.js';
+    import AuthStore from './src/store/auth.js';
+
+    // Expor router globalmente para links inline (nav-item, botões)
+    window.__router = Router;
+
+    // Redirecionar raiz para login se não autenticado
+    if (!AuthStore.isAuthenticated() && !['#/login','#/register','#/forgot-password','#/reset-password','#/confirm-email'].includes(window.location.hash)) {
+      window.location.hash = '#/login';
+    }
+
+    Router.init();
+  </script>
+</body>
+</html>

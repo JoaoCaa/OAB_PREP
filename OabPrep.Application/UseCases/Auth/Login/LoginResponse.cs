@@ -6,4 +6,5 @@ public sealed record LoginResponse(
     int ExpiresIn,
     Guid UserId,
     string Name,
-    string Email);
+    string Email,
+    string Role);
