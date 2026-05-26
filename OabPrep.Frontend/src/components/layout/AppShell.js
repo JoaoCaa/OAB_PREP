@@ -101,6 +101,20 @@ export class AppShell {
       </div>
 
       <div id="toast-root"></div>
+      <nav class="mobile-nav">
+        <div class="mobile-nav-item ${this.activeNav==='home'?'active':''}" onclick="window.__router.go('/')">
+          <span>🏠</span><span>Início</span>
+        </div>
+        <div class="mobile-nav-item ${this.activeNav==='practice'?'active':''}" onclick="window.__router.go('/select-area')">
+          <span>📚</span><span>Praticar</span>
+        </div>
+        <div class="mobile-nav-item ${this.activeNav==='performance'?'active':''}" onclick="window.__router.go('/performance')">
+          <span>📊</span><span>Desempenho</span>
+        </div>
+        <div class="mobile-nav-item" onclick="window.__router.go('/profile')">
+          <span>👤</span><span>Perfil</span>
+        </div>
+      </nav>
     `;
 
     // Logout global

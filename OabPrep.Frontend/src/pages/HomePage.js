@@ -21,10 +21,10 @@ export default class HomePage {
     shell.render(this._skeleton());
 
     // Carrega dados em paralelo
-    const [perf, sessions] = await Promise.allSettled([
+    const [perf] = await Promise.allSettled([
       UserService.getPerformance('7d'),
-      SessionService.list('InProgress'),
     ]);
+    const sessions = { status: 'fulfilled', value: null };
 
     const perfData    = perf.status    === 'fulfilled' ? perf.value    : null;
     const activeSession = sessions.status === 'fulfilled' ? sessions.value?.[0] : null;
@@ -107,7 +107,7 @@ export default class HomePage {
           <div class="section-title">Áreas para reforçar</div>
           ${weakAreas.length ? weakAreas.map(a => `
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-              <div class="text-sm text-muted" style="flex:1">${a.areaName}</div>
+              <div class="text-sm text-muted" style="flex:1">${a.areaName ?? a.lawAreaName ?? 'Área'}</div>
               <span class="badge badge-red">${Math.round(a.accuracyPct)}%</span>
             </div>
           `).join('') : '<p class="text-muted text-sm">Nenhuma área fraca detectada 🎉</p>'}
