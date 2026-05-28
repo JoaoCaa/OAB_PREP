@@ -101,6 +101,8 @@ public static class DependencyInjection
                     new AnthropicLlmService(http, settings.Anthropic),
                 LlmProvider.AzureOpenAI =>
                     new AzureOpenAiLlmService(http, settings.AzureOpenAI),
+                LlmProvider.Gemini =>
+                    new GeminiLlmService(http, settings.Gemini),
                 _ =>
                     new OpenAiLlmService(http, settings.OpenAI)
             };

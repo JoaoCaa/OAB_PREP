@@ -1,6 +1,6 @@
 namespace OabPrep.Infrastructure.Services.Llm;
 
-public enum LlmProvider { OpenAI, Anthropic, AzureOpenAI }
+public enum LlmProvider { OpenAI, Anthropic, AzureOpenAI, Gemini }
 
 public sealed class LlmSettings
 {
@@ -8,6 +8,7 @@ public sealed class LlmSettings
     public OpenAiSettings OpenAI { get; set; } = new();
     public AnthropicSettings Anthropic { get; set; } = new();
     public AzureOpenAiSettings AzureOpenAI { get; set; } = new();
+    public GeminiSettings Gemini { get; set; } = new();
 }
 
 public sealed class OpenAiSettings
@@ -29,4 +30,10 @@ public sealed class AzureOpenAiSettings
     public string Endpoint { get; set; } = string.Empty;
     public string DeploymentName { get; set; } = string.Empty;
     public string ApiVersion { get; set; } = "2024-02-01";
+}
+
+public sealed class GeminiSettings
+{
+    public string ApiKey { get; set; } = string.Empty;
+    public string Model { get; set; } = "gemini-2.5-flash";
 }
