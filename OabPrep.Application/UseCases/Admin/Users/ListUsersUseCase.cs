@@ -32,13 +32,8 @@ public sealed class ListUsersUseCase
 
         var userIds = users.Select(u => u.Id).ToList();
 
-        var sessionCountsTask = _sessionRepository.GetSessionCountsByUserIdsAsync(userIds, ct);
-        var answeredCountsTask = _cacheRepository.GetTotalAnsweredByUserIdsAsync(userIds, ct);
-
-        await Task.WhenAll(sessionCountsTask, answeredCountsTask);
-
-        var sessionCounts = sessionCountsTask.Result;
-        var answeredCounts = answeredCountsTask.Result;
+        var sessionCounts = await _sessionRepository.GetSessionCountsByUserIdsAsync(userIds, ct);
+        var answeredCounts = await _cacheRepository.GetTotalAnsweredByUserIdsAsync(userIds, ct);
 
         var items = users.Select(u => new AdminUserResponse(
             u.Id, u.Name, u.Email, u.Role, u.IsActive, u.EmailConfirmed, u.AvatarUrl, u.CreatedAt,

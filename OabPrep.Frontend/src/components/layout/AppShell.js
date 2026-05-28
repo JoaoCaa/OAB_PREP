@@ -46,7 +46,7 @@ export class AppShell {
           <div style="padding:22px 20px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
             <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#a87c2a);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#1a1200;flex-shrink:0">⚖</div>
             <div>
-              <div style="font-size:15px;font-weight:600">OAB Prep</div>
+              <div style="font-size:15px;font-weight:600">EstudeDireito</div>
               <div style="font-size:10px;color:var(--text2)">Plataforma de Estudos</div>
             </div>
           </div>

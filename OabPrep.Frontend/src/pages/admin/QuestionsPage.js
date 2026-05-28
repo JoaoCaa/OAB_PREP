@@ -323,7 +323,7 @@ export class ReportsPage {
           ${(d.topWeakAreas??[]).map((a,i) => `
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
               <span style="font-size:16px;color:var(--text3);font-weight:700;min-width:20px">${i+1}</span>
-              <span style="flex:1;font-size:13px">${a}</span>
+              <span style="flex:1;font-size:13px">${typeof a === 'string' ? a : a.areaName ?? a.name ?? JSON.stringify(a)}</span>
               <span class="badge badge-red">Alta taxa de erro</span>
             </div>
           `).join('')}

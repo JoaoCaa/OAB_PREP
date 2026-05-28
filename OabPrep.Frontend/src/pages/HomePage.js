@@ -54,7 +54,7 @@ export default class HomePage {
       <!-- Saudação -->
       <div style="margin-bottom:24px">
         <h1 style="margin-bottom:4px">Olá, <span style="color:var(--gold)">${name}</span>! 👋</h1>
-        <p class="text-muted">Vamos estudar para a OAB hoje? Continue progredindo!</p>
+        <p class="text-muted">Vamos estudar direito hoje? Continue progredindo!</p>
       </div>
 
       <!-- Banner de sessão ativa -->

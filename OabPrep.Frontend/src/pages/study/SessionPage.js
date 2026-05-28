@@ -309,6 +309,34 @@ export default class SessionPage {
     }
   }
 
+  // async _sendChat(q) {
+  //   const input = document.getElementById('chat-input');
+  //   const msg = input?.value.trim();
+  //   if (!msg) return;
+  //   input.value = '';
+
+  //   if (!this.state.chatMessages[q.questionId]) this.state.chatMessages[q.questionId] = [];
+  //   const msgs = this.state.chatMessages[q.questionId];
+  //   if (msgs.length >= 20) { showToast('Limite de 20 mensagens atingido', 'warning'); return; }
+
+  //   const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  //   msgs.push({ role: 'user', content: msg, time: now });
+  //   this._updateChatUI(q.questionId);
+
+  //   try {
+  //     const result = await SessionService.sendChatMessage(this.sessionId, q.questionId, msg);
+  //     msgs.push({
+  //       role: 'assistant',
+  //       content: result.content,
+  //       time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+  //     });
+  //   } catch (err) {
+  //     msgs.push({ role: 'assistant', content: `Erro: ${err.message}`, time: now });
+  //   }
+  //   this._updateChatUI(q.questionId);
+  // }
+
+  //RESPOSTA SIMULADA
   async _sendChat(q) {
     const input = document.getElementById('chat-input');
     const msg = input?.value.trim();
@@ -323,17 +351,15 @@ export default class SessionPage {
     msgs.push({ role: 'user', content: msg, time: now });
     this._updateChatUI(q.questionId);
 
-    try {
-      const result = await SessionService.sendChatMessage(this.sessionId, q.questionId, msg);
+    // Simulação de resposta da IA para demonstração
+    setTimeout(() => {
       msgs.push({
         role: 'assistant',
-        content: result.content,
+        content: `Com base no Estatuto da OAB e no Código de Ética, a alternativa correta é a que melhor se adequa aos princípios da advocacia. O advogado deve sempre pautar sua conduta pela ética profissional, sigilo e lealdade ao cliente, conforme estabelece o art. 2º do Código de Ética e Disciplina da OAB.`,
         time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       });
-    } catch (err) {
-      msgs.push({ role: 'assistant', content: `Erro: ${err.message}`, time: now });
-    }
-    this._updateChatUI(q.questionId);
+      this._updateChatUI(q.questionId);
+    }, 1000);
   }
 
   _updateChatUI(qid) {

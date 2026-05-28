@@ -18,7 +18,7 @@ export default class LoginPage {
         <div class="auth-card">
           <div style="text-align:center;margin-bottom:32px">
             <div class="auth-logo-box">⚖</div>
-            <h2 style="margin-bottom:4px">Bem-vindo ao OAB Prep</h2>
+            <h2 style="margin-bottom:4px">Bem-vindo ao EstudeDireito</h2>
             <p class="text-muted text-sm">Entre para continuar seus estudos</p>
           </div>
 

@@ -22,10 +22,9 @@ const ROUTES = {
   '/profile':           () => import('../pages/profile/ProfilePage.js'),
   '/privacy':           () => import('../pages/profile/PrivacyPage.js'),
   // Admin routes — protegidas por role=Admin
-  '/admin':             () => import('../pages/admin/AdminPage.js'),
-  '/admin/questions':   () => import('../pages/admin/QuestionsPage.js'),
-  '/admin/users':       () => import('../pages/admin/UsersPage.js'),
-  '/admin/reports':     () => import('../pages/admin/ReportsPage.js'),
+  '/admin/questions':   () => import('../pages/admin/QuestionsPage.js').then(m => ({ default: m.QuestionsPage })),
+  '/admin/users':       () => import('../pages/admin/QuestionsPage.js').then(m => ({ default: m.UsersPage })),
+  '/admin/reports':     () => import('../pages/admin/QuestionsPage.js').then(m => ({ default: m.ReportsPage })),
 };
 
 /** Rotas que não exigem autenticação */

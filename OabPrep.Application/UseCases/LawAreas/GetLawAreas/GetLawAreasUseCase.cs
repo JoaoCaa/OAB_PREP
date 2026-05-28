@@ -22,14 +22,13 @@ public sealed class GetLawAreasUseCase
         if (_cache.TryGetValue(CacheKey, out IList<LawAreaResponse>? cached) && cached is not null)
             return cached;
 
-        var areas = await _repository.GetAllActiveAsync(ct);
+        var areas = await _repository.GetAllActiveWithCountAsync(ct);
 
         var result = areas
-            .Select(a => new LawAreaResponse(a.Id, a.Name, a.Slug, a.Description, a.IconUrl, 0, null))
+            .Select(a => new LawAreaResponse(a.Id, a.Name, a.Slug, a.Description, a.IconUrl, a.QuestionCount, null))
             .ToList();
 
         _cache.Set(CacheKey, result, CacheDuration);
-
         return result;
     }
 }

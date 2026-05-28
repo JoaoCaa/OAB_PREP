@@ -14,30 +14,26 @@ public sealed class ReportRepository : IReportRepository
     {
         var cutoff30d = DateTime.UtcNow.AddDays(-30);
 
-        var totalUsersTask        = _context.Users.CountAsync(cancellationToken);
-        var activeUsersTask       = _context.Sessions
-                                        .Where(s => s.CreatedAt >= cutoff30d)
-                                        .Select(s => s.UserId)
-                                        .Distinct()
-                                        .CountAsync(cancellationToken);
-        var totalQuestionsTask    = _context.Questions.CountAsync(q => q.IsActive, cancellationToken);
-        var totalSessionsTask     = _context.Sessions.CountAsync(cancellationToken);
-        var avgAccuracyTask       = _context.UserPerformanceCaches
-                                        .Where(c => !c.LawAreaId.HasValue && c.TotalAnswered > 0)
-                                        .AverageAsync(c => (decimal?)c.AccuracyPct, cancellationToken);
+        var totalUsers     = await _context.Users.CountAsync(cancellationToken);
+        var activeUsers    = await _context.Sessions
+                                .Where(s => s.CreatedAt >= cutoff30d)
+                                .Select(s => s.UserId)
+                                .Distinct()
+                                .CountAsync(cancellationToken);
+        var totalQuestions = await _context.Questions.CountAsync(q => q.IsActive, cancellationToken);
+        var totalSessions  = await _context.Sessions.CountAsync(cancellationToken);
+        var avgAccuracy    = await _context.UserPerformanceCaches
+                                .Where(c => !c.LawAreaId.HasValue && c.TotalAnswered > 0)
+                                .AverageAsync(c => (decimal?)c.AccuracyPct, cancellationToken);
 
-        await Task.WhenAll(totalUsersTask, activeUsersTask, totalQuestionsTask,
-                           totalSessionsTask, avgAccuracyTask);
-
-        // Top weak areas: areas with highest error rate from SessionAnswers
         var rawAreas = await _context.SessionAnswers
             .Where(a => a.IsCorrect.HasValue && a.Question!.LawArea != null)
             .GroupBy(a => new { a.Question!.LawAreaId, Name = a.Question.LawArea!.Name })
             .Select(g => new
             {
                 g.Key.Name,
-                Total   = g.Count(),
-                Errors  = g.Count(a => a.IsCorrect == false)
+                Total  = g.Count(),
+                Errors = g.Count(a => a.IsCorrect == false)
             })
             .ToListAsync(cancellationToken);
 
@@ -48,7 +44,6 @@ public sealed class ReportRepository : IReportRepository
             .Take(5)
             .ToList();
 
-        // Registrations by month
         var rawRegs = await _context.Users
             .GroupBy(u => new { u.CreatedAt.Year, u.CreatedAt.Month })
             .Select(g => new { g.Key.Year, g.Key.Month, Count = g.Count() })
@@ -60,11 +55,11 @@ public sealed class ReportRepository : IReportRepository
             .ToList();
 
         return new SystemSummaryData(
-            totalUsersTask.Result,
-            activeUsersTask.Result,
-            totalQuestionsTask.Result,
-            totalSessionsTask.Result,
-            Math.Round(avgAccuracyTask.Result ?? 0m, 2),
+            totalUsers,
+            activeUsers,
+            totalQuestions,
+            totalSessions,
+            Math.Round(avgAccuracy ?? 0m, 2),
             topWeakAreas,
             regsByMonth);
     }
