@@ -40,6 +40,7 @@ public sealed class ChatRepository : IChatRepository
     {
         var question = await _context.Questions
             .Include(q => q.LawArea)
+            .Include(q => q.Alternatives)
             .FirstOrDefaultAsync(q => q.Id == questionId, ct);
 
         if (question is null) return null;
@@ -53,11 +54,20 @@ public sealed class ChatRepository : IChatRepository
                             && a.AnsweredAt.HasValue, ct);
         }
 
+        var alternatives = question.Alternatives
+            .OrderBy(a => a.Letter)
+            .Select(a => new AlternativeInfo(a.Letter, a.Text))
+            .ToList();
+
+        var correctLetter = question.Alternatives.First(a => a.IsCorrect).Letter;
+
         return new QuestionContext(
             question.Statement,
             question.LawArea?.Name ?? "Geral",
             question.LegalRefs,
-            isAnswered);
+            isAnswered,
+            alternatives,
+            correctLetter);
     }
 
     public async Task AddAsync(ChatMessage message, CancellationToken ct = default)

@@ -9,8 +9,7 @@ public sealed class SendChatMessageUseCase
     private const string SystemPromptTemplate =
         "Você é um assistente jurídico especializado no Direito Brasileiro e no Exame OAB. " +
         "Responda SEMPRE em português. Cite artigos de lei específicos. " +
-        "NUNCA revele a alternativa correta se a questão ainda não foi respondida. " +
-        "Questão atual: {0}. Área: {1}. Referências: {2}.";
+        "Questão: {0}\nAlternativas:\n{1}\nÁrea: {2}. Referências: {3}.{4}";
 
     private const string GenericSystemPrompt =
         "Você é um assistente jurídico especializado no Direito Brasileiro e no Exame OAB. " +
@@ -90,13 +89,17 @@ public sealed class SendChatMessageUseCase
         if (ctx is null)
             return GenericSystemPrompt;
 
-        var antiSpoilerClause = ctx.IsAnsweredInSession
-            ? string.Empty
-            : " NUNCA revele a alternativa correta se a questão ainda não foi respondida.";
+        var alternativesText = string.Join("\n", ctx.Alternatives.Select(a => $"{a.Letter}) {a.Text}"));
+
+        var correctInfo = ctx.IsAnsweredInSession
+            ? $" A alternativa correta é {ctx.CorrectLetter}."
+            : " NUNCA revele nem insinue qual é a alternativa correta.";
 
         return string.Format(SystemPromptTemplate,
             ctx.Statement,
+            alternativesText,
             ctx.AreaName,
-            ctx.LegalRefs ?? "não especificadas") + antiSpoilerClause;
+            ctx.LegalRefs ?? "não especificadas",
+            correctInfo);
     }
 }

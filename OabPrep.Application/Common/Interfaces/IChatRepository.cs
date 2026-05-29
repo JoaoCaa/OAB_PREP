@@ -2,7 +2,15 @@ using OabPrep.Domain.Entities;
 
 namespace OabPrep.Application.Common.Interfaces;
 
-public record QuestionContext(string Statement, string AreaName, string? LegalRefs, bool IsAnsweredInSession);
+public record AlternativeInfo(string Letter, string Text);
+
+public record QuestionContext(
+    string Statement,
+    string AreaName,
+    string? LegalRefs,
+    bool IsAnsweredInSession,
+    IList<AlternativeInfo> Alternatives,
+    string CorrectLetter);
 
 public interface IChatRepository
 {
